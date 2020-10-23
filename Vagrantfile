@@ -9,6 +9,12 @@
 Vagrant.configure("2") do |config|
 
   config.ssh.insert_key = false
+  config.ssh.forward_agent = true
+  config.vm.provision 'shell', inline: 'echo "vagrant:vagrant" | chpasswd'
+  config.vm.provision "shell", inline: <<-SHELL
+     sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config    
+     systemctl restart sshd.service
+  SHELL
   (1..3).each do |i|
    config.vm.define "worker-#{i}" do |web|
      web.vm.box = "centos/7"
