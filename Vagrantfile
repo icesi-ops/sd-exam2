@@ -35,6 +35,12 @@ Vagrant.configure("2") do |config|
       end
       vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', './masterDisk.vdi']
      end
+     # Provision Ansible playbook
+     master.vm.provision "file", source: "Ansible", destination: "$HOME"
+     master.vm.provision "file", source: "scripts", destination: "$HOME"
+     # Install Ansible and configure nodes
+     master.vm.provision "shell", path: "scripts/ansible.sh"
+
    end
 
  
