@@ -20,6 +20,7 @@ Vagrant.configure("2") do |config|
      web.vm.box = "centos/7"
      web.vm.hostname = "worker-#{i}"
      web.vm.network "private_network", ip: "192.168.33.1#{i}"
+     web.vm.provision "file", source: "scripts", destination: "$HOME"
      web.vm.provider "virtualbox" do |vb|
       vb.customize ["modifyvm", :id, "--memory", "512", "--cpus", "1", "--name", "worker-#{i}"]
       unless File.exist?("./workerDisk#{i}.vdi")

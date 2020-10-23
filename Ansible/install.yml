@@ -1,8 +1,10 @@
 ---
-- hosts:*
+- hosts: all
   tasks:
    - name: Run Gluster Install Commands
-     shell: ./scripts/glusterfs.sh
+     shell: bash glusterfs.sh
+     become: yes
    - name: Run Gluster Hosts Commands
-     shell: ./scripts/glusterconfig.sh
+     shell: bash glusterconfig.sh
+     become: yes
 
