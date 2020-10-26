@@ -1,10 +1,22 @@
 ---
 - hosts: all
   tasks:
-   - name: Run Gluster Install Commands
-     shell: bash glusterfs.sh
-     become: yes
-   - name: Run Gluster Hosts Commands
-     shell: bash glusterconfig.sh
-     become: yes
+    - name: Run Gluster Install Commands
+      shell: bash glusterfs.sh
+      become: yes
+    - name: Run Gluster Hosts Commands
+      shell: bash glusterconfig.sh
+      become: yes
+      
+    - name: Install packages
+      yum:
+        name: "{{ PACKAGES }}"
+        state: present
+        update_cache: true
+        force: yes
 
+    - name: Add user vagrant to the docker group
+      user:
+        name: vagrant
+        groups: docker
+        append: yes

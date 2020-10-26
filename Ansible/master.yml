@@ -1,0 +1,10 @@
+---
+- hosts: master
+  become: true
+
+  tasks:
+    - name: Initialize the cluster
+      shell: docker swarm init --advertise-addr $ip >> cluster_initialized.txt
+      args:
+        chdir: $HOME
+        creates: cluster_initialized.txt
