@@ -13,9 +13,9 @@ sudo -H pip install --upgrade pip
 sudo -H pip install ansible
 
 # Run Ansible playbooks
-#echo -e "\nRUNNING ANSIBLE [cluster.yml] **************************************************\n"
+echo -e "\nRUNNING ANSIBLE [cluster.yml] **************************************************\n"
 ansible-playbook -i ansible_hosts install.yml
-#echo -e "\nRUNNING ANSIBLE [master.yml] ***************************************************\n"
-#ansible-playbook -i hosts master.yml
-#echo -e "\nRUNNING ANSIBLE [join.yml] *****************************************************\n"
-#ansible-playbook -i hosts join.yml
+echo -e "\nRUNNING ANSIBLE [master.yml] ***************************************************\n"
+ansible-playbook -i hosts master.yml
+echo -e "\nRUNNING ANSIBLE [join.yml] *****************************************************\n"
+ansible-playbook -i hosts join.yml

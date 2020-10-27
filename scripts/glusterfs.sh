@@ -10,9 +10,3 @@ mkfs.xfs /dev/sdb1
 mkdir -p /gluster/data 
 sudo mount /dev/sdb1 /gluster/data/
 
-sudo yum install yum-utils -y
-sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-sudo yum install -y docker-ce
-sudo systemctl start docker
-sudo systemctl enable docker
-
