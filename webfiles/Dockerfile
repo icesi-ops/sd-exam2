@@ -7,5 +7,5 @@ WORKDIR /webfiles
 COPY requirements.txt /webfiles
 RUN pip install -r requirements.txt
 
-COPY app.py /app
+COPY app.py /webfiles
 CMD python app.py

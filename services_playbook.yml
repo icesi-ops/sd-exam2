@@ -1,4 +1,4 @@
-- hosts: docker-manager
+- hosts: master
   become: yes
   become_user: vagrant
   become_method: sudo
@@ -9,9 +9,9 @@
                     dest: .
 
           - name: copying db
-	    copy:  
+            copy:
                     src: ./db
-		    dest: .	 
+                    dest: .	 
 
           - name: copying docker-compose 
             copy:
