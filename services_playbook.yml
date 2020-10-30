@@ -8,6 +8,11 @@
                     src: ./webfiles
                     dest: .
 
+          - name: copying db
+	    copy:  
+                    src: ./db
+		    dest: .	 
+
           - name: copying docker-compose 
             copy:
                     src: ./docker-compose.yml
