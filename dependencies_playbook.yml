@@ -2,12 +2,13 @@
   become: yes
   tasks:
 
-          - name: configuration
+          - name: hosts
             shell: |
                     echo "192.168.50.10 node0" >> /etc/hosts
                     echo "192.168.50.11 node1" >> /etc/hosts
                     echo "192.168.50.12 node2" >> /etc/hosts
                     echo "192.168.50.13 node3" >> /etc/hosts
+
           - name: install Docker
             yum:
                     name: docker

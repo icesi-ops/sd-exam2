@@ -1,1 +1,14 @@
-f
+- hosts: docker-manager
+  become: yes
+  become_user: vagrant
+  become_method: sudo
+  tasks:
+          - name: copying webfiles
+            copy:
+                    src: ./webfiles
+                    dest: .
+
+          - name: copying docker-compose 
+            copy:
+                    src: ./docker-compose.yml
+                    dest: .
