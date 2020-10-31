@@ -24,7 +24,9 @@ Vagrant.configure("2") do |config|
     end
     vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', firstDisk]
     end 
-    master.vm.provision "shell", path: "scripts/glusterfs.sh"
+    master.vm.provision "ansible" do |ansible|
+      ansible.playbook = "playbooks/confMaster/master.yml"
+    end
   end
 
    config.vm.define "worker-1" do |node1|
@@ -38,7 +40,12 @@ Vagrant.configure("2") do |config|
       end
      vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', secondDisk]
      end
-     node1.vm.provision "shell", path: "scripts/glusterfs.sh"
+     node1.vm.provision "ansible" do |ansible|
+      ansible.playbook = "playbooks/confWorkers/worker.yml"
+     ansible.groups = {
+       "workers" => ["worker-1"]
+     }
+     end
    end
 
    config.vm.define "worker-2" do |node2|
@@ -52,7 +59,12 @@ Vagrant.configure("2") do |config|
       end
      vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', thirdDisk]
      end
-     node2.vm.provision "shell", path: "scripts/glusterfs.sh"
+     node2.vm.provision "ansible" do |ansible|
+      ansible.playbook = "playbooks/confWorkers/worker.yml"
+     ansible.groups = {
+       "workers" => ["worker-2"]
+     }
+     end
    end
 
 config.vm.define "worker-3" do |node3|
@@ -61,12 +73,17 @@ config.vm.define "worker-3" do |node3|
      node3.vm.network "private_network", ip: "192.168.33.13"
      node3.vm.provider "virtualbox" do |vb|
       vb.customize ["modifyvm", :id, "--memory", "512", "--cpus", "1", "--name", "worker-3"]
-     unless File.exist?(secondDisk)
+     unless File.exist?(fourthDisk)
         vb.customize ['createhd', '--filename', fourthDisk, '--variant', 'Fixed', '--size', 5 * 1024]
       end
      vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', fourthDisk]
      end
-     node3.vm.provision "shell", path: "scripts/glusterfs.sh"
+     node3.vm.provision "ansible" do |ansible|
+      ansible.playbook = "playbooks/confWorkers/worker.yml"
+     ansible.groups = {
+       "workers" => ["worker-3"]
+     }
+     end
    end
 
 
