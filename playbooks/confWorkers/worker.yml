@@ -1,0 +1,25 @@
+- hosts: workers
+  become: true
+  tasks:
+   - name: "Install curl"
+     yum:
+       name: curl
+   - name: "download docker.sh"
+     shell: "curl -fsSL get.docker.com -o get-docker.sh"
+   - name: "permission docker.sh"
+     file:
+       path: ./get-docker.sh
+       owner: root
+       group: root
+       mode: 0777
+   - name: "Run docker.sh"
+     shell: "sudo sh ./get-docker.sh"
+   - name: "Usermod"
+     shell: "usermod -aG docker vagrant"
+   - name: "Start docker"
+     service:
+      name: docker
+      state: started
+      enabled: yes
+     become: true
+
