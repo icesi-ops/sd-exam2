@@ -1,10 +1,15 @@
 ---
-- hosts: master
+- hosts: head
   become: true
 
   tasks:
+    - name: Obtain the actual ip address of the master host
+      shell: ip=$(hostname -I | awk '{print $2}')
+      become_user: root
+
     - name: Initialize the cluster
       shell: docker swarm init --advertise-addr $ip >> cluster_initialized.txt
+      become_user: root
       args:
         chdir: $HOME
         creates: cluster_initialized.txt
