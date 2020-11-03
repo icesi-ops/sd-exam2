@@ -6,7 +6,7 @@ sudo sfdisk --force /dev/sdb << EOF
 ;
 EOF
 
-# mkfs.xfs /dev/sdb1
-# mkdir -p /gluster/data 
-# sudo mount /dev/sdb1 /gluster/data/
+mkfs.xfs /dev/sdb1
+mkdir -p /gluster/data /swarm/volumes
+sudo mount /dev/sdb1 /gluster/data/
 

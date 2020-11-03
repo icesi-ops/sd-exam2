@@ -15,6 +15,8 @@ sudo -H pip install ansible
 # Run Ansible playbooks
 echo -e "\nRUNNING ANSIBLE [install.yml] **************************************************\n"
 ansible-playbook -i hosts install.yml
+echo -e "\nRUNNING ANSIBLE [gluster-init.yml] ***************************************************\n"
+ansible-playbook -i hosts gluster-init.yml
 echo -e "\nRUNNING ANSIBLE [master.yml] ***************************************************\n"
 ansible-playbook -i hosts master.yml
 echo -e "\nRUNNING ANSIBLE [join.yml] *****************************************************\n"

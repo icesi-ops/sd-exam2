@@ -1,0 +1,35 @@
+---
+- hosts: head
+  gather_facts: No
+  become: true
+
+  tasks:
+    - name: Peer probe worker-1
+      shell: sudo gluster peer probe worker-1
+      become_user: root
+    - name: Peer probe worker-2
+      shell: sudo gluster peer probe worker-2
+      become_user: root
+    - name: Peer probe worker-3
+      shell: sudo gluster peer probe worker-3
+      become_user: root
+    - name: Create gluster volume
+      shell: sudo gluster volume create swarm-vols replica 4 master:/gluster/data worker-1:/gluster/data worker-2:/gluster/data worker-3:/gluster/data force
+      become_user: root
+    - name: Allow gluster volume auth
+      shell: sudo gluster volume set swarm-vols auth.allow 127.0.0.1
+      become_user: root
+    - name: Start gluster volume
+      shell: sudo gluster volume start swarm-vols
+      become_user: root
+
+- hosts: all
+  gather_facts: No
+  become: true
+
+  tasks:
+    - name: Mount gluster volume
+      shell: sudo mount.glusterfs localhost:/swarm-vols /swarm/volumes
+      become_user: root
+
+
