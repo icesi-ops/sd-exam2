@@ -1,0 +1,153 @@
+---
+    - hosts: all
+      become: true
+      become_user: vagrant
+      become_method: sudo
+      tasks:
+
+       - name: update
+         yum:
+           name: '*'
+           state: latest
+
+       - name: "Install gluster"
+         yum:
+           name: centos-release-gluster
+
+       - name: "Install glusterfs"
+         yum:
+           name: glusterfs-server
+
+       - name: "start glusterd"
+         service:
+          name: glusterd
+          state: restarted
+          enabled: yes
+
+       - name: "Volumen partition"
+         shell: echo ';' | sfdisk /dev/sdb
+         become: yes 
+         
+       - name: "Create directory"
+         shell: mkdir -p /gluster/data /swarm/volumes
+         become: yes 
+
+       - name: "montar the volume"
+         shell: mount /dev/sdb /gluster/data/
+         ignore_errors: yes
+
+       - name: "Add nodes"
+         shell: echo "192.168.33.100	master" >> /etc/hosts && echo "192.168.33.11	worker-1" >> /etc/hosts && echo "192.168.33.12	worker-2" >> /etc/hosts && echo "192.168.33.13	worker-3" >> /etc/hosts
+         become: yes 
+      
+       - name: "install Docker"
+         yum:
+          name: docker
+          state: present
+          update_cache: true
+
+       - name: "Add docker permisions to vagrant"
+         shell: sudo usermod -aG docker $(whoami)
+         become: yes 
+
+       - name: "start Docker"
+         service:
+          name: docker
+          state: started
+       
+       - name: "Delete existing docker-compose version if it's different."
+         file:
+          path: "/usr/bin/docker-compose"
+          state: absent
+          when: >
+            docker_compose_current_version.stdout is defined
+            and docker_compose_version not in docker_compose_current_version.stdout
+
+       - name: "Install Docker Compose"
+         get_url:
+           url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
+           dest: "/usr/bin/docker-compose"
+           mode: 0755
+
+       - name: "stop of firewall"
+         shell: systemctl stop firewalld
+         
+       - name: "disable the firewall"
+         shell: systemctl disable firewalld
+
+    - hosts: master
+      become: yes
+      become_user: vagrant
+      become_method: sudo 
+      tasks:
+       
+       - name: "init swarm"
+         shell: docker swarm init --advertise-addr {{ ansible_eth1['ipv4']['address']  }}
+         ignore_errors: yes
+       
+       
+    - hosts: servers
+      become: yes
+      become_user: vagrant
+      become_method: sudo
+      vars:
+       docker_swarm_manager_ip: "192.168.33.100"
+      tasks:
+         - name: "generate token cluster"
+           shell: docker swarm join-token -q worker
+           run_once: true
+           register: docker_worker_token
+           delegate_to: "{{ groups['docker-manager'][0] }}"
+           delegate_facts: true
+       
+         - name: "little debug"
+           debug:
+           msg: "{{ docker_worker_token.stdout }}"
+       
+         - name: "join in the cluster"
+           shell: docker swarm join --token "{{ docker_worker_token.stdout }}" "{{ docker_swarm_manager_ip }}":2377
+           run_once: true
+           ignore_errors: yes
+
+
+    - hosts: master
+      become: yes
+      tasks:
+         - name: "web1 check"
+           shell: gluster peer probe node1
+           ignore_errors: yes
+         
+         - name: "web2 check"
+           shell: gluster peer probe node2
+           ignore_errors: yes
+         
+         - name: "web3 check"
+           shell: gluster peer probe node3
+           ignore_errors: yes
+         
+         - name: "gluster volume"
+           shell: gluster volume create swarm-vols replica 4 node0:/gluster/data node1:/gluster/data node2:/gluster/data node3:/gluster/data force
+           ignore_errors: yes
+         
+         - name: "set swarm-vols"
+           shell: gluster volume set swarm-vols auth.allow 127.0.0.1
+           ignore_errors: yes
+         
+         - name: "start swarm-vols"
+           shell: gluster volume start swarm-vols
+           ignore_errors: yes
+
+         - name: "copying webfiles"
+           copy:
+            src: ./webfiles
+            dest: .
+
+         - name: "copying db"
+           copy:
+            src: ./db
+            dest: . 
+
+         - name: "copying docker-compose" 
+           copy:
+            src: ./docker-compose.yml
+            dest: .
