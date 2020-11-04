@@ -352,7 +352,7 @@ COMMIT;
 
 Para poder realizar el discovery service de docker swarm, primero se debe realizar la siguiente configuracion.
 
-![image](images/webphp.png)
+![image](images/joinworker.png)
 
 Como servicio escogido para desarrollar la aplicación se muestra una página donde se presentan características de diferentes modelos y marcas de celulares, dentro de las que se destaca una calificación dependiendo de aspectos como su capacidad, cámara, procesador, etc.
 
