@@ -63,7 +63,7 @@
         state: present
      become: true
    - name: "Crear File system"
-       shell: mkfs.xfs /dev/sdb1
+     shell: mkfs.xfs /dev/sdb1
    - name: "Crear Directorio"
      file:
        path: /gluster/data
