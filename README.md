@@ -103,7 +103,7 @@ docker stack services stackdemo
 - No se logró conectar la base de datos con el servidor web. Aunque ambas se conocen entre sí, no hay un código que logre la conexión entre estos.
 - Dificultad para la conexión automatica entre master y workers. Intentamos por medio de Ansible automatizar el proceso utiizando variables de ambientes para pasar el token a los workers y lograr una conexión.
 
-Web-biografía
+## Web-biografía
 
 - Videos y documentos de apoyo del curso Sistemas Distribuidos 2020-2 Universidad Icesi.
 - https://docs.docker.com/engine/reference/commandline/volume_create/
