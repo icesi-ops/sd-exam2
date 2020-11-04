@@ -10,11 +10,11 @@ Vagrant.configure("2") do |config|
          unless File.exist?(disco)
           vb.customize ['createhd', '--filename', disco, '--size', 512]
          end
-         vb.customize ['storageattach', :id, '--storagectl', 'SATAController', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disco]
+         vb.customize ['storageattach', :id, '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disco]
         end
       ##### APROVISIONAMIENTO DEL MASTER##### 
         master.vm.provision "ansible" do |ansible|
-         ansible.playbook = "./ansible/ansible.yml"
+         ansible.playbook = "./configuration_managment/ansible/ansible.yml"
          ansible.inventory_path = 'ansible_hosts'  
         end
     end
@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
      config.ssh.insert_key = false
      (1..3).each do |i|
       config.vm.define "worker-#{i}" do |worker|
-        worker.vm.box = "ubuntu/bionic64"
+        worker.vm.box = "centos/7"
         worker.vm.hostname = "worker-#{i}"
         worker.vm.network "private_network", ip: "192.168.33.1#{i}"
         worker.vm.provider "virtualbox" do |vb|
@@ -31,15 +31,13 @@ Vagrant.configure("2") do |config|
          unless File.exist?(disco)
           vb.customize ['createhd', '--filename', disco, '--size', 512]
          end
-         vb.customize ['storageattach', :id, '--storagectl', 'SATAController', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disco]
+         vb.customize ['storageattach', :id, '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disco]
         end
-
        ##### APROVISIONAMIENTO DE LOS SERVIDORES ##### 
-       worker.vm.provision :salt do |salt|
-         salt.masterless = true
-         salt.run_highstate = true
-         salt.verbose = true
-       end
+        worker.vm.provision "ansible" do |ansible|
+         ansible.playbook = "./configuration_managment/ansible/ansible.yml"
+         ansible.inventory_path = 'ansible_hosts'  
+        end
      end
     end
   end  
