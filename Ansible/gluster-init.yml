@@ -32,4 +32,9 @@
       shell: sudo mount.glusterfs localhost:/swarm-vols /swarm/volumes
       become_user: root
 
+  tasks:
+    - name: Create swarm-vols directory
+      shell: sudo mkdir /swarm/volumes/swarm-vols
+      become_user: root
+
 

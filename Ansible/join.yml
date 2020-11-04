@@ -28,3 +28,14 @@
       args:
         chdir: $HOME
         creates: node_joined.txt
+
+- hosts: head
+  become: true
+
+  tasks:
+    - name: Get image from repository
+      shell: docker pull german2404/counter:latest
+
+  tasks:
+    - name: Run docker-compose with stack
+      shell: sudo docker stack deploy -c docker-compose.yml appcounter
