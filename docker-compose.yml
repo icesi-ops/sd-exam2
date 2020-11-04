@@ -1,0 +1,37 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: dummypassword
+      MYSQL_USER: todos-user
+      MYSQL_PASSWORD: dummytodos
+      MYSQL_DATABASE: todos
+    deploy:
+      mode: replicated
+      replicas: 2
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 20M
+        reservations:
+          cpus: '0.1'
+          memory: 20M
+
+  web:
+    image: httpd
+    ports:
+      - "80:80"
+    deploy:
+      mode: replicated
+      replicas: 3
+      resources:
+        limits:
+          cpus: '0.10'
+          memory: 20M
+        reservations:
+          cpus: '0.05'
+          memory: 10M 
