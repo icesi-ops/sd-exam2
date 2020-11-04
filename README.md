@@ -72,7 +72,7 @@ En este punto se crean los nodos workers con sus respectivas direcciones IP y se
    end
 ```
   
- Al final se crea y aprovisiona el nodo máster en el cual se le define el volumen Gluster que va a tener y el aprovisionamiento a través de Ansible, adicionalmente la instalación de Ansible en el a través de un script
+ Al final se crea y aprovisiona el nodo máster en el cual se le define el volumen Gluster que va a tener (masterDisk.vdi), y se define la manera en la que se va a provisionar, que es a través de Ansible y algunos scripts, y finalmente se instala  Ansible en el nodo a través de un script.
  
  ```
 # Install dependencies
@@ -95,7 +95,7 @@ echo -e "\nRUNNING ANSIBLE [join.yml] ******************************************
 ansible-playbook -i hosts join.yml
 ```
 
-Cuando termina la definiciòn de la maquinas, en el master se corre el script Ansible.sh el cual inicialmente instala las dependencias necesarias, las cuales son el servicio sshpass para poder enviar archivos a través de SSH, python pip. Posteriormente se instala Ansible en el master y se corren los playbooks _Install_, _Gluster-init_, _master_ y _join_.
+Cuando termina la definiciòn de las maquinas, en el master se corre el script Ansible.sh el cual inicialmente instala las dependencias necesarias, las cuales son el servicio sshpass, que sirve para poder enviar archivos a través de SSH, python pip. Posteriormente se instala Ansible en el master y se corren los playbooks _Install_, _Gluster-init_, _master_ y _join_.
 
 ## Tareas de integración
 
