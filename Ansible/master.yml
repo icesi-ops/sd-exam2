@@ -1,0 +1,11 @@
+---
+- hosts: head
+  become: true
+
+  tasks:
+
+    - name: Obtain IP and Initialize the cluster
+      shell: ip=$(hostname -I | awk '{print $2}') && docker swarm init --advertise-addr $ip >> cluster_initialized.txt
+      become_user: root
+      args:
+        creates: cluster_initialized.txt
