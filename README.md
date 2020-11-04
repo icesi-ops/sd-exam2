@@ -43,7 +43,13 @@ En primer lugar, tenemos el vagrantfile, que despliega las 4 máquinas virtuales
 * CentOS7 Worker3
 Adicionalmente, este vagrantfile hace uso de ansible para el aprovisionamiento de las máquinas virtuales; en este caso en particular instala algunas herramientas como docker y docker compose para efectos académicos:
 
+**Evidencia**
+https://raw.githubusercontent.com/SebastianUrbano/sd-exam2/images/images/VagrantFile.png
+
 Cómo se aprecia anteriormente, se configuró en el vagrantfile el contenedor Master, se aprovisionó el mismo, se definieron los workers y también se asoció el aprovisionamiento con Ansible.
+
+**Evidencias**
+https://raw.githubusercontent.com/SebastianUrbano/sd-exam2/images/images/confAnsible.png
 
 
 Una vez hecho esto se procedió a hacer uso de docker swarm. Esta parte se hizo manualmente de la siguiente manera:
@@ -55,6 +61,9 @@ docker swarm init --advertise-addr $ip
 ```
 
 Esto con el fin de generar un token para conectar los workers con el master:
+
+**Evidencia**
+https://raw.githubusercontent.com/SebastianUrbano/sd-exam2/images/images/Token.png
 
 Token que posteriormente se ingresa a los workers para que queden conectados al swarm.
 Se crean los volúmenes dentro de las máquinas, necesarios para la persistencia de la base de datos:
