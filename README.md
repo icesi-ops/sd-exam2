@@ -137,7 +137,7 @@ tasks:
             ....
 ```
 
-En este archivo yml, ansible instala a través de scripts Gluster y su configuración, posteriormente instala dependencias necesarias para el manejo de volumenes y el manejo de docker, como _utils_, _lvm2_, _Docker_ y Docker-Swarm.
+En este archivo yml, Ansible instala a través de scripts Gluster y su configuración, posteriormente instala dependencias necesarias para el manejo de volumenes y el manejo de docker, como _utils_, _lvm2_, _Docker_ y Docker-Swarm.
 
 ***Gluster-init.yml***
 
@@ -235,10 +235,10 @@ Este playbook se encarga de configurar la parte final del Docker Swarm, en donde
 
 ## Aprovisionamiento del Backend
 
-Luego de la instalación de todas las dependencias a través del Ansible, mostrado anteriormente el Docker compose se encarga de aprovisionar el backend, este backend incluye una base de datos y un servidor web, los cuales son replicados.
+Luego de la instalación de todas las dependencias a través del Ansible, mostrado anteriormente el Docker compose se encarga de aprovisionar el backend, este backend incluye una base de datos y un servidor web, los cuales son replicados. Cabe resaltar que el backend está construido con _flask_ y la base de datos de _redis_. La aplicación backend lo que hace es aumentar un contador almacenado en la base de datos cada vez que se realiza un curl a cualquiera de las replicas, estas replicas estan sincrinizadas y por ende no importa a cual replica se haga el curl, la cuenta siempre se mantiene congruente.
 
 
-***docker-compose.yml
+***docker-compose.yml***
 
 ```
 services:
@@ -273,10 +273,12 @@ services:
            memory: 20M
 ```
 
-Este docker-compose se encarga de desplegar la base de datos tipo Redis usando los volumenes Gluster, posteriormente se agregan 4 replicas web y 4 replicas de redis, adicionalmente se configuran los puertos, adicionalmente se configura el limite de memoria 20Mb y el limite de 10% de CPU.
+Este docker-compose se encarga de desplegar la base de datos tipo Redis usando los volumenes Gluster, posteriormente se agregan 4 replicas web y 4 replicas de redis, adicionalmente se configuran los puertos, finalmente se configura el limite de memoria 20Mb y el limite de 10% de CPU.
 
 ## Problemas encontrados
 
-Durante el desarrollo del parcial tuvimos errores en todas las etapas, los cuales retrasaron el desarrollo del parcial, el primero de estos fue la configuración de los playbooks relacionados con la configuración de Docker, el principal problema fue realizar correctamente el join.yml el cual tenia errores en algunos comandos y en su sintaxis
+Durante el desarrollo del parcial tuvimos errores en todas las etapas, los cuales retrasaron el desarrollo del parcial. El primero de estos fue la configuración de los playbooks relacionados con la configuración de Docker, el principal problema fue realizar correctamente el join.yml el cual tenia errores en algunos comandos y en su sintaxis.
 
-Luego de solucionar el problema ocasionado por Ansible tuvimos dificultad con Gluster, en donde logramos de sincronizar los volumenes pero luego de montar la base de datos sobre los volumenes, la base de datos no lograba hacer persistente los datos guardados en ella. Para solucionar esto se tuvo que cambiar el tipo de configuración en el Gluster y el punto de montaje.Este error estaba ocurriendo debido a que el Yml interpreta la palabra "volume" como un volumen de Docker, el tipo de montaje que se implementó se llama bind mount, para permitir la sincronización, la propagación de la información y la persistencia de los datos guardados ahí.
+Luego de solucionar el problema ocasionado por Ansible tuvimos dificultad con Gluster, en donde logramos sincronizar los volumenes, pero luego de montar la base de datos sobre estos volumenes, la base de datos no lograba hacer que sus datos fueran persistentes en los volumenes. Para solucionar esto se tuvo que cambiar el tipo de configuración en el Gluster y el punto de montaje. Este error estaba ocurriendo debido a que el Yml interpreta la palabra "volume" como un volumen de Docker, el tipo de montaje que se implementó se llama bind mount, para permitir la sincronización, la propagación de la información y la persistencia de los datos guardados ahí.
+
+Dentro de la configuración realizada, para crear la aplicación con Flask, nuestro equipo intentó construir la aplicación del contador. Pero, dentro del archivo de requirements donde se pedían las importaciones necesarias para la aplicación (de Flask y Redis), no se encontraba escrita la lína de "flask". Por lo que dió errores la construcción del aplicativo para después correrlo correctamente.
