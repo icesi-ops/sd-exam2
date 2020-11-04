@@ -12,6 +12,7 @@ Incluye los archivos necesarios para poder realizar el aprovisionamiento de la p
 ## Descripción general 
 
 Para realizar exitosamente el parcial, se necesitó de cuatro maquinas que corresponden a: 
+
 **1.** Maquina Master.  **-->** 192.168.50.10
 
 **2.** Maquina Nodo 1.      **-->**         192.168.50.11
@@ -25,6 +26,7 @@ Para el despliegue automático de estas maquinas se utilizó la herramienta **Va
 El sistema operativo de las maquinas anteriormente mencionadas fue **centos/7**
 
 **Uso de Vagrant**
+
 Para hacer uso de esta herramienta se debe saber la manera de trabajar con Ansible, Con lo cual se define en Vagrantfile la creación de las cuatro maquinas (una master y tres nodos). Y por supuesto las cuatro configuraciones de playbooks que deben correr en las maquinas cuando se inicien. Este procedimiento sera explicado en la sustentación.
 
 Ya con el archivo Vagrantfile creado, se procede a ejecutar el siguiente comando
