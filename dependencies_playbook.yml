@@ -70,14 +70,14 @@
             yum:
                     name: xfsprogs
 
-          - name: Volume partition
+          - name:  partition
             parted:
                     device: /dev/sdb
                     number: 1
                     state: present
             ignore_errors: yes
 
-          - name: Creating a XFS files system
+          - name: XFS files system
             shell: mkfs.xfs /dev/sdb1
             ignore_errors: yes
 

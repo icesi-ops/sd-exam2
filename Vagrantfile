@@ -76,7 +76,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
    config.vm.provision "playbook4", type: "ansible" do |ansible|
      ansible.inventory_path = 'hosts'
-     ansible.playbook = "services_playbook.yml"
+     ansible.playbook = "files_playbook.yml"
    end
 
 end
