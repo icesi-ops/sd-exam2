@@ -137,7 +137,7 @@ tasks:
             ....
 ```
 
-En este archivo yml, ansible instala a través de scripts Gluster y su configuración, posteriormente instala dependencias necesarias para el manejo de volumenes y el manejo de docker, como _utils_, _lvm2_ y _Docker_
+En este archivo yml, ansible instala a través de scripts Gluster y su configuración, posteriormente instala dependencias necesarias para el manejo de volumenes y el manejo de docker, como _utils_, _lvm2_, _Docker_ y Docker-Swarm.
 
 ***Gluster-init.yml***
 
@@ -177,7 +177,7 @@ hosts: head
       become_user: root
 ```
 
-Inicialmente en los host tipo head, correspondiente al master, se prueba la conexión entre los demas nodos y posteriormente se crean los volumenes nombrados _swarm-vols_ y finalmente se inicializan a través de la instrucción _start_. Luego en todos los host (Workers y Master) se montan los volumenes gluster.
+Inicialmente en los host de tipo head (correspondientes al master) se prueban las conexiones entre todos los nodos y posteriormente se crean los volumenes nombrados como _swarm-vols_ y finalmente se inicializan a través de la instrucción _start_. Luego en todos los host (Workers y Master) se montan los volumenes gluster.
 
 
 ***master.yml***
@@ -231,7 +231,7 @@ Este PlayBook inicializa el cluster tipo Docker Swarm en el master a través de 
     - name: Run docker-compose with stack
       shell: sudo docker stack deploy -c docker-compose.yml appcounter
 ```
-Este playbook se encarga de configurar la parte final del Docker Swarm, en donde se hace el join a los diferentes Nodos y se corre el Docker-Compose, 
+Este playbook se encarga de configurar la parte final del Docker Swarm, en donde se hace el join a los diferentes Nodos y se corre el Docker-Compose con una imagen de Docker guardada en el este repositorio (counter:latest)
 
 ## Aprovisionamiento del Backend
 
