@@ -48,7 +48,7 @@ https://raw.githubusercontent.com/SebastianUrbano/sd-exam2/images/images/Vagrant
 
 Cómo se aprecia anteriormente, se configuró en el vagrantfile el contenedor Master, se aprovisionó el mismo, se definieron los workers y también se asoció el aprovisionamiento con Ansible.
 
-**Evidencias**
+**Evidencia**
 https://raw.githubusercontent.com/SebastianUrbano/sd-exam2/images/images/confAnsible.png
 
 
@@ -87,3 +87,26 @@ Una vez, se tiene el docker-compose.yml listo. Se puede empezar a correr a modo 
 Con esta herramienta podemos escalar el servicio mediante el parámetro  réplicas.
 
 Para correr el archivo docker-compose.yml a modo de servicio usamos el comando:
+
+```
+docker stack deploy --compose -file docker-compose.yml <name>
+```
+
+Y se pueden visualizar los servicios con:
+
+```
+docker stack services stackdemo
+```
+
+## Dificultades
+
+- No se logró conectar la base de datos con el servidor web. Aunque ambas se conocen entre sí, no hay un código que logre la conexión entre estos.
+- Dificultad para la conexión automatica entre master y workers. Intentamos por medio de Ansible automatizar el proceso utiizando variables de ambientes para pasar el token a los workers y lograr una conexión.
+
+Web-biografía
+
+- Videos y documentos de apoyo del curso Sistemas Distribuidos 2020-2 Universidad Icesi.
+- https://docs.docker.com/engine/reference/commandline/volume_create/
+- https://github.com/ICESI/ds-glusterfs/blob/master/00_nodes_deploy/README.md
+- https://www.techcrumble.net/2019/12/how-install-docker-and-docker-compose-using-ansible-playbooks/
+- https://jsitech1.gitbooks.io/meet-docker/content/archivo_docker-compose_en_detalle.html
