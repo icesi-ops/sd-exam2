@@ -7,13 +7,18 @@ services:
        - "6379:6379"
      command: ["redis-server", "--appendonly", "yes"]
      volumes:
-      - ../../swarm/volumes/swarm-vols:/data
+      - source: /swarm/volumes
+        target: /data
+        type: bind
+        bind:
+          propagation: shared
      deploy:
        mode: replicated
        replicas: 4
-       limits:
-         cpus: '0.1'
-         memory: 20M
+       resources:
+         limits:
+           cpus: '0.10'
+           memory: 20M
 
    web:
      image: german2404/counter
@@ -22,8 +27,11 @@ services:
      deploy:
        mode: replicated
        replicas: 4
-       limits:
-         cpus: '0.1'
-         memory: 20M
+       resources:
+         limits:
+           cpus: '0.10'
+           memory: 20M
+
+
 
 
