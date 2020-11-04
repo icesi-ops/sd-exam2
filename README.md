@@ -5,7 +5,7 @@
 ### Integrantes ###
 
  * Daniel Portillo - A00310452
- * Bryan Medina - 
+ * Bryan Medina - A00328416 
  * Juan Camilo Calvo - A00030140
 
 
