@@ -13,7 +13,7 @@
    - name: "download docker.sh"
      get_url:
        url: https://get.docker.com 
-       dest: get-docker.sh
+       dest: ./get-docker.sh
        mode: 0755  
    - name: "Run docker.sh"
      shell: "sudo sh ./get-docker.sh"
