@@ -2,9 +2,9 @@
 
 ## Integrantes
 
-**German Carvajal **
+**German Carvajal A00134280**
 
-**Jhan Carlos Diaz Vidal  A00310560 **
+**Jhan Carlos Diaz Vidal  A00310560**
 
 **Mateo Matta Lopez A00310540**
 
@@ -48,7 +48,7 @@ El primer bloque de nuestro VagrantFile se utiliza config para la configuración
   
 ```
 
-En este punto se crean los nodos workers con sus respectivas direcciones IP y se definen elementos bases como la memoria, almacenamiento y los scripts usados para aprovisionar
+En este punto se crean los nodos workers con sus respectivas direcciones IP y se definen elementos bases como la memoria, almacenamiento, predefiniendo la condición de los volumenes que se van a crear mas adelante con Gluster, y los scripts usados para aprovisionar
 
 
 ```
@@ -72,4 +72,5 @@ En este punto se crean los nodos workers con sus respectivas direcciones IP y se
    end
 ```
   
+ Al final se crea y aprovisiona el nodo máster en el cual se le define el volumen Gluster que va a tener y el aprovisionamiento a través de Ansible, adicionalmente la instalación de Ansible en el a través de un script
  
