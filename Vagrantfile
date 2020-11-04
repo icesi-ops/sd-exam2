@@ -40,7 +40,7 @@ Vagrant.configure("2") do |config|
      vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', secondDisk]
      end
      node1.vm.provision "ansible" do |ansible|
-      ansible.playbook = "playbooks/confWorkers/worker.yml"
+      ansible.playbook = "playbooks/confMaster/master.yml"
      ansible.groups = {
        "workers" => ["worker-1"]
      }
@@ -59,7 +59,7 @@ Vagrant.configure("2") do |config|
      vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', thirdDisk]
      end
      node2.vm.provision "ansible" do |ansible|
-      ansible.playbook = "playbooks/confWorkers/worker.yml"
+      ansible.playbook = "playbooks/confMaster/master.yml"
      ansible.groups = {
        "workers" => ["worker-2"]
      }
@@ -78,7 +78,7 @@ config.vm.define "worker-3" do |node3|
      vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', fourthDisk]
      end
      node3.vm.provision "ansible" do |ansible|
-      ansible.playbook = "playbooks/confWorkers/worker.yml"
+      ansible.playbook = "playbooks/confMaster/master.yml"
      ansible.groups = {
        "workers" => ["worker-3"]
      }
