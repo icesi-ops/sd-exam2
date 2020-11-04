@@ -107,9 +107,12 @@ docker stack services stackdemo
 
 Estrategia: Branch per feature
 La idea inicial fue utilizar las ramas que consideramos necesarias para la realización del parcial. Se requirió tres ramas IaC, compose y lerma, la rama que se definió como integradora es lerma.
-En la rama IaC, se planteó el Vagrantfile y el aprovisionamiento.
-En la rama compose, la parte de docker-compose con las replicas en los dos contenedores de back y db.
-En la rama lerma, se integró y añadió lo faltante como por ejemplo el docker swarm.
+
+- En la rama IaC, se planteó el Vagrantfile y el aprovisionamiento.
+- En la rama compose, la parte de docker-compose con las replicas en los dos contenedores de back y db.
+- En la rama lerma, se integró y añadió lo faltante como por ejemplo el docker swarm.
+
+Por último se realizó un pull request para pasar a la rama main todo lo realizado y ubicado hasta el momento en lerma.
 
 ## Web-biografía
 
