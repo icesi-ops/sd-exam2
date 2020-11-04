@@ -103,6 +103,14 @@ docker stack services stackdemo
 - No se logró conectar la base de datos con el servidor web. Aunque ambas se conocen entre sí, no hay un código que logre la conexión entre estos.
 - Dificultad para la conexión automatica entre master y workers. Intentamos por medio de Ansible automatizar el proceso utiizando variables de ambientes para pasar el token a los workers y lograr una conexión.
 
+## Branching
+
+Estrategia: Branch per feature
+La idea inicial fue utilizar las ramas que consideramos necesarias para la realización del parcial. Se requirió tres ramas IaC, compose y lerma, la rama que se definió como integradora es lerma.
+En la rama IaC, se planteó el Vagrantfile y el aprovisionamiento.
+En la rama compose, la parte de docker-compose con las replicas en los dos contenedores de back y db.
+En la rama lerma, se integró y añadió lo faltante como por ejemplo el docker swarm.
+
 ## Web-biografía
 
 - Videos y documentos de apoyo del curso Sistemas Distribuidos 2020-2 Universidad Icesi.
