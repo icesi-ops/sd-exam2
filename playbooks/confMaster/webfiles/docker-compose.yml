@@ -11,7 +11,8 @@ services:
     volumes:
       - ./data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-                
+    deploy:
+      replicas: 1           
   php:
     container_name: php
     restart: always
