@@ -29,7 +29,7 @@
    - name: "Install docker-compose"
      get_url:
        url: https://github.com/docker/compose/releases/download/1.27.4/docker-compose-Linux-x86_64
-       dest: usr/local/bin/docker-compose
+       dest: /usr/local/bin/docker-compose
        mode: 0755
    - name: "copiar carpeta"
      copy:
@@ -45,7 +45,7 @@
             - centos-release-gluster
             - epel-release
             - xfsprogs
-       state: lastest
+       state: latest
    - name: "Install gluster server"
      yum:
        name: glusterfs-server
