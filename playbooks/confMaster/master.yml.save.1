@@ -1,0 +1,33 @@
+---
+- hosts: master
+  become: true
+  tasks:
+   - name: "Install curl"
+     yum:
+       name: curl
+   - name: "download docker.sh"
+     sudo: yes
+     shell: "curl -fsSL get.docker.com -o get-docker.sh"
+   - name: "permission docker.sh"
+     file: 
+       path: ./get-docker.sh
+       owner: root
+       group: root
+       mode: 0777    
+   - name: "Run docker.sh"
+     script: ./get-docker.sh
+   - name: "Usermod"
+     shell: "usermod -aG docker vagrant"
+   - name: "Start docker"
+     service:
+      name: docker
+      state: restarted
+      enable: yes
+   - name: "Install docker-compose"
+     shell: "curl -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose"
+   - name: "chmod +x in /usr/local/bin/docker-compose file"
+     file:
+       path: /usr/local/bin/docker-compose
+       owner: root
+       group: root
+       mode: "+x"

@@ -1,0 +1,80 @@
+
+---
+- hosts: all
+  become: true
+  tasks:
+   - name: "Install utils"
+     yum:
+       name: 
+            - yum-utils
+            - wget
+            - curl
+       state: latest
+   - name: "download docker.sh"
+     get_url:
+       url: https://get.docker.com 
+       dest: ./get-docker.sh
+       mode: 0755  
+   - name: "Run docker.sh"
+     shell: "sudo sh ./get-docker.sh"
+     become: true
+   - name: "Usermod"
+     shell: "usermod -aG docker vagrant"
+   - name: "Start docker"
+     service:
+      name: docker
+      state: started
+      enabled: yes
+     become: true
+   - name: "Install docker-compose"
+     get_url:
+       url: https://github.com/docker/compose/releases/download/1.27.4/docker-compose-Linux-x86_64
+       dest: /usr/local/bin/docker-compose
+       mode: 0755
+   - name: "copiar carpeta"
+     copy:
+        src: ./webfiles
+        dest: .
+   - name: "Actualizar"
+     yum:
+       name: '*'
+       state: latest
+   - name: "Install gluster"
+     yum:
+       name:
+            - centos-release-gluster
+            - epel-release
+            - xfsprogs
+       state: latest
+   - name: "Install gluster server"
+     yum:
+       name: glusterfs-server
+       state: latest
+   - name: "Start glusterd"
+     service:
+      name: glusterd
+      state: started
+      enabled: yes
+     become: true
+   - name: "Crear Particion"
+     parted:
+        device: /dev/sdb
+        number: 1
+        state: present
+     become: true
+   - name: "Crear File system"
+     shell: mkfs.xfs /dev/sdb1
+   - name: "Crear Directorio"
+     file:
+       path: /gluster/data
+       state: directory
+       mode: 0755
+     become: true
+   - name: "Montar File system"
+     ansible.posix.mount:
+       path: /gluster/data/
+       src: /dev/sdb1
+       fstype: xfs
+       opts: noatime
+       state: present
+       
