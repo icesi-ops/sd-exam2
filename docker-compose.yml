@@ -1,0 +1,42 @@
+version: "3.2"
+services:
+    movies_api:
+        build: ./api_rest
+        environment: 
+            - DB_HOST: db_1
+            - DB_PORT: 26257
+            - DB_NAME: movies
+            - DB_USER: root
+            - DB_PASSWORD: password
+        networks:
+            cockroachdb_net:
+        ports: 
+            - "5000:5000"
+        depends_on: 
+            - db_1
+            - db_2
+    db_1:
+        container_name: db_1
+        image: cockroachdb/cockroach:latest
+        volumes:
+           - ./data/db_1:/cockroach/cockroach-data
+        command: start --insecure
+        ports:
+            - "8080:8080"
+        networks:
+            cockroachdb_net:
+                aliases:
+                   - db_1
+    db_2:
+        container_name: db_2
+        image: cockroachdb/cockroach:latest
+        volumes:
+           - ./data/db_2:/cockroach/cockroach-data
+        command: start --insecure --join=db_1
+        networks:
+            cockroachdb_net:
+                aliases:
+                   - db_2
+networks:
+    cockroachdb_net:
+        driver: bridge
