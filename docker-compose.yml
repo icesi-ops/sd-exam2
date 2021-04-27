@@ -3,24 +3,24 @@ services:
     movies_api:
         build: ./api_rest
         environment: 
-            - DB_HOST: db_1
-            - DB_PORT: 26257
-            - DB_NAME: movies
-            - DB_USER: root
-            - DB_PASSWORD: password
+            DB_HOST: db_1
+            DB_PORT: 26257
+            DB_NAME: movies
+            DB_USER: movie_user
+            DB_PASSWORD: password
         networks:
             cockroachdb_net:
         ports: 
             - "5000:5000"
         depends_on: 
-            - db_1
-            - db_2
+            - db_init
+
     db_1:
         container_name: db_1
         image: cockroachdb/cockroach:latest
         volumes:
            - ./data/db_1:/cockroach/cockroach-data
-        command: start --insecure
+        command: start --insecure --join=db_1,db_2
         ports:
             - "8080:8080"
         networks:
@@ -32,11 +32,23 @@ services:
         image: cockroachdb/cockroach:latest
         volumes:
            - ./data/db_2:/cockroach/cockroach-data
-        command: start --insecure --join=db_1
+        command: start --insecure --join=db_1,db_2
         networks:
             cockroachdb_net:
                 aliases:
                    - db_2
+    db_init:
+        image: cockroachdb/cockroach
+        depends_on: 
+            - db_1
+            - db_2
+        networks:
+            cockroachdb_net:
+                aliases:
+                   - init
+        volumes:
+            - ./setup_db.sh:/setup_db.sh
+        entrypoint: "/bin/bash"
+        command: /setup_db.sh
 networks:
     cockroachdb_net:
-        driver: bridge
