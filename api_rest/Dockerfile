@@ -3,4 +3,5 @@ EXPOSE 5000:5000
 RUN mkdir /app
 COPY ./build/install/sd-exam-2/ /app/
 WORKDIR /app/bin
-CMD ["./sd-exam-2"]
+COPY ./start.sh .
+CMD ["./start.sh"]
