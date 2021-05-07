@@ -2,20 +2,21 @@ package zero.network
 
 import io.ktor.application.*
 import io.ktor.features.*
-import io.ktor.gson.*
-import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import kotlinx.css.CSSBuilder
-import kotlinx.html.CommonAttributeGroupFacade
-import kotlinx.html.FlowOrMetaDataContent
-import kotlinx.html.style
-import org.jetbrains.exposed.sql.*
+import io.ktor.serialization.*
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.exists
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import zero.network.db.DB
-import zero.network.db.DBInfo
 import zero.network.db.dao.Movies
+import zero.network.db.model.DefaultMovieList
+import zero.network.util.minutes
 import java.lang.Thread.sleep
+import kotlin.concurrent.thread
+
+var online = false
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -23,38 +24,38 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
 
-    sleep(120 * 1000)
+    val setupDB =  {
+        DB.isTestMode = testing
+        if (!testing) sleep(2.5.minutes)
 
-    transaction(DB.db) {
-        SchemaUtils.create(Movies)
-        Movies.insert {
-            it[name] = "Big hero 6"
-            it[age] = 2015
+        val exist = transaction(DB.db) { Movies.exists() }
+
+        if (!exist) {
+            transaction(DB.db) {
+                SchemaUtils.create(Movies)
+            }
+            DefaultMovieList.forEach(DB::save)
         }
+        online = true
     }
 
+    if (!testing) thread(block = setupDB)
+    else setupDB()
+
     install(ContentNegotiation) {
-        gson {}
+        json()
     }
 
     routing {
         get("/") {
-            call.respond(Welcome)
+            call.respond(APIInfo())
+        }
+        get("/movie"){
+            if (!online) return@get call.respond(mapOf("state" to "offline"))
+            val movies = transaction(DB.db) {
+                Movies.selectAll().map (Movies::toMovie)
+            }
+            call.respond(movies)
         }
     }
-}
-
-
-fun FlowOrMetaDataContent.styleCss(builder: CSSBuilder.() -> Unit) {
-    style(type = ContentType.Text.CSS.toString()) {
-        +CSSBuilder().apply(builder).toString()
-    }
-}
-
-fun CommonAttributeGroupFacade.style(builder: CSSBuilder.() -> Unit) {
-    this.style = CSSBuilder().apply(builder).toString().trim()
-}
-
-suspend inline fun ApplicationCall.respondCss(builder: CSSBuilder.() -> Unit) {
-    this.respondText(CSSBuilder().apply(builder).toString(), ContentType.Text.CSS)
 }
