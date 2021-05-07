@@ -3,7 +3,6 @@ package zero.network
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import zero.network.db.model.DefaultMovieList
 import zero.network.db.model.Movie

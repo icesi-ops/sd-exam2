@@ -5,6 +5,7 @@ import io.ktor.features.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
+import io.ktor.utils.io.*
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.exists
 import org.jetbrains.exposed.sql.selectAll
@@ -12,11 +13,6 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import zero.network.db.DB
 import zero.network.db.dao.Movies
 import zero.network.db.model.DefaultMovieList
-import zero.network.util.minutes
-import java.lang.Thread.sleep
-import kotlin.concurrent.thread
-
-var online = false
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -24,38 +20,30 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
 
-    val setupDB =  {
-        DB.isTestMode = testing
-        if (!testing) sleep(2.5.minutes)
+    DB.isTestMode = testing
+    val exist = transaction(DB.db) { Movies.exists() }
 
-        val exist = transaction(DB.db) { Movies.exists() }
-
-        if (!exist) {
-            transaction(DB.db) {
-                SchemaUtils.create(Movies)
-            }
-            DefaultMovieList.forEach(DB::save)
+    if (!exist) {
+        transaction(DB.db) {
+            SchemaUtils.create(Movies)
         }
-        online = true
+        DefaultMovieList.forEach(DB::save)
     }
-
-    if (!testing) thread(block = setupDB)
-    else setupDB()
 
     install(ContentNegotiation) {
         json()
     }
-
     routing {
         get("/") {
             call.respond(APIInfo())
         }
-        get("/movie"){
-            if (!online) return@get call.respond(mapOf("state" to "offline"))
-            val movies = transaction(DB.db) {
-                Movies.selectAll().map (Movies::toMovie)
+        route("/movie"){
+            get {
+                val movies = transaction(DB.db) {
+                    Movies.selectAll().map (Movies::toMovie)
+                }
+                call.respond(movies)
             }
-            call.respond(movies)
         }
     }
 }
