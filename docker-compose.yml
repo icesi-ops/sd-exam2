@@ -1,8 +1,8 @@
 version: "3.2"
 services:
     movies_api:
-        build: ./api_rest
-        environment: 
+        build: .
+        environment:
             DB_HOST: db_1
             DB_PORT: 26257
             DB_NAME: movies
@@ -10,9 +10,9 @@ services:
             DB_PASSWORD: password
         networks:
             cockroachdb_net:
-        ports: 
+        ports:
             - "5000:5000"
-        depends_on: 
+        depends_on:
             - db_1
             - db_2
             - db_3

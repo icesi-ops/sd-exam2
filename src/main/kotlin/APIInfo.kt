@@ -9,8 +9,9 @@ data class APIInfo(
     val message: String = "Welcome to Movies API",
     val inTestMode: Boolean = DB.isTestMode,
     val options: List<Option> = listOf(
-        Option("API INFO", "GET", "/", "Show this info"),
-        Option("list movies", "GET", "/movie", "List all movies on the DB")
+        Option("API INFO", "GET", "/api", "Show this info"),
+        Option("list movies", "GET", "/api/movie", "List all movies on the DB"),
+        Option("list movies", "GET", "/api/movie/{ID}", "return the movie with the specific ID")
     )
 ) {
     @Serializable
