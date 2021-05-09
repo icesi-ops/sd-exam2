@@ -10,6 +10,7 @@ pipeline {
         stage('setup gradle') {
             steps {
                 sh "chmod +x gradlew"
+                sh "chmod +x start.sh"
                 sh "./gradlew clean"
             }
         }
@@ -21,6 +22,11 @@ pipeline {
         stage('build app') {
             steps {
                 sh "./gradlew installDist"
+            }
+        }
+        stage('remove unused image') {
+            steps {
+                sh "docker rmi zeronetdev/sd-exam-2 || true"
             }
         }
         stage("build image") {
@@ -37,11 +43,6 @@ pipeline {
                         container.push("latest")
                     }
                 }
-            }
-        }
-        stage('remove unused image') {
-            steps {
-                sh "docker rmi zeronetdev/sd-exam-2:latest"
             }
         }
         stage('deploy'){
