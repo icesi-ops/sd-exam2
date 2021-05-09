@@ -1,8 +1,8 @@
 version: "3.2"
 services:
     movies_api:
-        build: ./api_rest
-        environment: 
+        image: zeronetdev/sd-exam-2:latest
+        environment:
             DB_HOST: db_1
             DB_PORT: 26257
             DB_NAME: movies
@@ -10,24 +10,22 @@ services:
             DB_PASSWORD: password
         networks:
             cockroachdb_net:
-        ports: 
+        ports:
             - "5000:5000"
-        depends_on: 
+        depends_on:
             - db_1
             - db_2
             - db_3
 
     db_1:
         container_name: db_1
-        image: cockroachdb/cockroach:latest
+        build: ./db
         volumes:
            - ./data/db_1:/cockroach/cockroach-data
-           - ./setup_db.sh:/setup_db.sh
-        #command: start --insecure --join=db_1,db_2,db_3
-        command: /setup_db.sh
-        entrypoint: /bin/bash
         ports:
-            - "8080:8080"
+            - "8081:8080"
+        command: setup_db.sh
+        entrypoint: /bin/bash
         networks:
             cockroachdb_net:
                 aliases:
