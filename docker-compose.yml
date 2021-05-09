@@ -26,8 +26,8 @@ services:
         #command: start --insecure --join=db_1,db_2,db_3
         command: /setup_db.sh
         entrypoint: /bin/bash
-        #ports:
-        #    - "8081:8080"
+        ports:
+            - "8081:8080"
         networks:
             cockroachdb_net:
                 aliases:
