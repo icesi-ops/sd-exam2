@@ -1,7 +1,7 @@
 version: "3.2"
 services:
     movies_api:
-        build: .
+        image: zeronetdev/sd-exam-2:latest
         environment:
             DB_HOST: db_1
             DB_PORT: 26257
