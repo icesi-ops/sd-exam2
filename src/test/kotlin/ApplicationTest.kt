@@ -20,9 +20,9 @@ class ApplicationTest {
     @Test
     fun apiInfoSerialization() {
         withTestEngine {
-            handleRequest(HttpMethod.Get, "/").apply {
+            handleRequest(HttpMethod.Get, "/api").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals(APIInfo(), Json.decodeFromString(response.content?:"{}"))
+                assertEquals(APIInfo, Json.decodeFromString<Info>(response.content?:"{}"))
             }
         }
     }
@@ -30,7 +30,7 @@ class ApplicationTest {
     @Test
     fun innerDBTest() {
         withTestEngine {
-            handleRequest(HttpMethod.Get, "/movie").apply {
+            handleRequest(HttpMethod.Get, "/api/movie").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 assertEquals(DefaultMovieList, Json.decodeFromString<List<Movie>>(response.content?:"[]").map {
                     it.copy(id = null)

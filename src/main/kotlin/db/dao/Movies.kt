@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.Table
 import zero.network.db.model.Movie
 
 object Movies: Table(){
-    val id: Column<Int> = integer("id").autoIncrement()
+    val id: Column<Long> = long("id").autoIncrement()
     val name = varchar("name", 255)
     val age = integer("age")
     override val primaryKey: PrimaryKey = PrimaryKey(id, name = "PK_USER_ID")
