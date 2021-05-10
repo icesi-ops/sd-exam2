@@ -2,10 +2,12 @@ package zero.network
 
 import io.ktor.application.*
 import io.ktor.features.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import io.ktor.utils.io.*
+import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.exists
 import org.jetbrains.exposed.sql.selectAll
@@ -13,6 +15,8 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import zero.network.db.DB
 import zero.network.db.dao.Movies
 import zero.network.db.model.DefaultMovieList
+import zero.network.db.model.Movie
+import zero.network.routes.apiRoutes
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -31,19 +35,15 @@ fun Application.module(testing: Boolean = false) {
     }
 
     install(ContentNegotiation) {
-        json()
+        json(Json { ignoreUnknownKeys = true })
     }
     routing {
-        get("/") {
-            call.respond(APIInfo())
-        }
-        route("/movie"){
+        route("/api") {
             get {
-                val movies = transaction(DB.db) {
-                    Movies.selectAll().map (Movies::toMovie)
-                }
-                call.respond(movies)
+                call.respond(APIInfo())
             }
+            apiRoutes()
         }
     }
 }
+
