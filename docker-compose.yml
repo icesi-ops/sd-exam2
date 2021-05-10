@@ -1,5 +1,18 @@
-version: "3.2"
+version: "3.7"
 services:
+    proxy:
+        image: traefik:v2.0-alpine
+        command:
+            - "--api.insecure=true"
+            - "--providers.docker"
+            - "--log.level=DEBUG"
+        ports:
+            - "80:80"
+            - "8081:8080"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        networks:
+            cockroachdb_net:
     movies_api:
         image: zeronetdev/sd-exam-2:latest
         environment:
@@ -8,10 +21,12 @@ services:
             DB_NAME: movies
             DB_USER: root
             DB_PASSWORD: password
+        labels:
+            - "traefik.http.routers.movies.rule=PathPrefix(`/api`)"
+            - "traefik.http.services.movies.loadbalancer.server.port=5000"
+        scale: 3
         networks:
             cockroachdb_net:
-        ports:
-            - "5000:5000"
         depends_on:
             - db_1
             - db_2
@@ -22,8 +37,6 @@ services:
         build: ./db
         volumes:
            - ./data/db_1:/db/setup/cockroach-data
-        ports:
-            - "8081:8080"
         command: setup_db.sh
         entrypoint: /bin/bash
         networks:
