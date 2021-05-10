@@ -21,7 +21,7 @@ services:
         container_name: db_1
         build: ./db
         volumes:
-           - ./data/db_1:/cockroach/cockroach-data
+           - ./data/db_1:/db/setup/cockroach-data
         ports:
             - "8081:8080"
         command: setup_db.sh
