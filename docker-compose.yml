@@ -13,8 +13,12 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
         networks:
             cockroachdb_net:
+        mem_limit: 500m
+        cpus: 1
     movies_api:
         image: zeronetdev/sd-exam-2:latest
+        mem_limit: 500m
+        cpus: 1
         environment:
             DB_HOST: db_1
             DB_PORT: 26257
