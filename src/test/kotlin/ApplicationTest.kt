@@ -174,4 +174,14 @@ class ApplicationTest {
             }
         }
     }
+
+    @Test
+    fun healthTest() {
+        withTestEngine {
+            handleRequest(HttpMethod.Get, "/api/health").apply {
+                println(response.content)
+              assertEquals(response.content, "{\"status_DB\":\"Online\"}")
+            }
+        }
+    }
 }
