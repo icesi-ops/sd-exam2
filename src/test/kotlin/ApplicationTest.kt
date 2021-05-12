@@ -27,17 +27,6 @@ class ApplicationTest {
         }
     }
     @Test
-    fun innerDBTest() {
-        withTestEngine {
-            handleRequest(HttpMethod.Get, "/api/movie").apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals(DefaultMovieList, Json.decodeFromString<List<Movie>>(response.content?:"[]").map {
-                    it.copy(id = null)
-                })
-            }
-        }
-    }
-    @Test
     fun movieGetErrorID() {
         withTestEngine {
             handleRequest(HttpMethod.Get, "/api/movie/a").apply {
