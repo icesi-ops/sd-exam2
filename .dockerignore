@@ -1,0 +1,11 @@
+data
+build
+.gradle
+.idea
+gradle
+db
+proxy
+Dockerfile
+docker-compose.yml
+gradlew
+gradlew.bat
