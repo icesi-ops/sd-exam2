@@ -1,4 +1,3 @@
-#!/bin/bash
 docker-compose down
 docker rmi zeronetdev/sd-exam-2
 docker build -t zeronetdev/sd-exam-2 .

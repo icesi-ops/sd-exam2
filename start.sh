@@ -1,15 +1,10 @@
 #!/bin/sh
 echo "wait for db startup"
-sleep 10
-echo "16%"
-sleep 10
-echo "33%"
-sleep 10
-echo "50%"
-sleep 10
-echo "66%"
-sleep 10
-echo "83%"
-sleep 10
+i=0
+while [ $i -ne 60 ]; do
+    i=$(($i + 5))
+    sleep 5
+    echo "$i%"
+done
 echo "Running..."
 /app/bin/sd-exam-2
