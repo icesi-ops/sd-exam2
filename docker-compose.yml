@@ -1,14 +1,12 @@
 version: "3.7"
 services:
     proxy:
-        image: traefik:v2.0-alpine
-        command:
-            - "--api.insecure=true"
-            - "--providers.docker"
-            - "--log.level=DEBUG"
+        build: proxy
+
         ports:
             - "80:80"
             - "8081:8080"
+            - "443:443"
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         networks:
@@ -28,6 +26,12 @@ services:
         labels:
             - "traefik.http.routers.movies.rule=PathPrefix(`/api`)"
             - "traefik.http.services.movies.loadbalancer.server.port=5000"
+            - "traefik.http.middlewares.movies_https.redirectscheme.scheme=https"
+            - "traefik.http.routers.movies.entrypoints=web"
+            - "traefik.http.routers.movies.middlewares=movies_https@docker"
+            - "traefik.http.routers.movies_https.rule=PathPrefix(`/api`)"
+            - "traefik.http.routers.movies_https.tls=true"
+            - "traefik.http.routers.movies_https.entrypoints=websecure"
         scale: 3
         networks:
             cockroachdb_net:
