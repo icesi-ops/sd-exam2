@@ -1,0 +1,74 @@
+version: "3.7"
+services:
+    proxy:
+        build: proxy
+        mem_limit: 500m
+        cpus: 1
+        ports:
+            - "80:80"
+            - "8081:8080"
+            - "443:443"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        networks:
+            cockroachdb_net:
+    movies_api:
+        image: zeronetdev/sd-exam-2:latest
+        mem_limit: 500m
+        cpus: 1
+        environment:
+            DB_HOST: db_1
+            DB_PORT: 26257
+            DB_NAME: movies
+            DB_USER: root
+            DB_PASSWORD: password
+        labels:
+            - "traefik.http.routers.movies.rule=PathPrefix(`/api`)"
+            - "traefik.http.services.movies.loadbalancer.server.port=5000"
+            - "traefik.http.middlewares.movies_https.redirectscheme.scheme=https"
+            - "traefik.http.routers.movies.entrypoints=web"
+            - "traefik.http.routers.movies.middlewares=movies_https@docker"
+            - "traefik.http.routers.movies_https.rule=PathPrefix(`/api`)"
+            - "traefik.http.routers.movies_https.tls=true"
+            - "traefik.http.routers.movies_https.entrypoints=websecure"
+        scale: 3
+        networks:
+            cockroachdb_net:
+        depends_on:
+            - db_1
+            - db_2
+            - db_3
+
+    db_1:
+        container_name: db_1
+        build: ./db
+        volumes:
+           - ./data/db_1:/db/setup/cockroach-data
+        command: setup_db.sh
+        entrypoint: /bin/bash
+        networks:
+            cockroachdb_net:
+                aliases:
+                   - db_1
+    db_2:
+        container_name: db_2
+        image: cockroachdb/cockroach:latest
+        volumes:
+           - ./data/db_2:/cockroach/cockroach-data
+        command: start --insecure --join=db_1,db_2,db_3
+        networks:
+            cockroachdb_net:
+                aliases:
+                   - db_2
+    db_3:
+        container_name: db_3
+        image: cockroachdb/cockroach:latest
+        volumes:
+            - ./data/db_3:/cockroach/cockroach-data
+        command: start --insecure --join=db_1,db_2,db_3
+        networks:
+            cockroachdb_net:
+                aliases:
+                    - db_3
+networks:
+    cockroachdb_net:
