@@ -37,6 +37,6 @@ spec:
     spec:
      containers:
      - name: appconfig
-       image: icesiops/appconfig:0.1.0
+       image: icesiops/appconfig:0.2.0
        ports:
         - containerPort: 8010
