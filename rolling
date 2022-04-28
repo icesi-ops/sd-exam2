@@ -1,0 +1,8 @@
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+      timeoutSeconds: 100
+      intervalSeconds: 5
+      updatePeriodSeconds: 5

@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: invoice-deployment
+  labels:
+    app: invoice-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: invoice-app
+  template:
+    metadata:
+      labels:
+        app: config-app
+    spec:
+      containers:
+      - name: invoice-app
+        image: sebasgarciamo/app-invoice
+        ports:
+        - containerPort: 8006
+      - name: invoice-db
+        image: gallo9923/app-invoice-postgres
+        - containerPort: 5432

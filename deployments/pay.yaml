@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pay-deployment
+  labels:
+    app: pay-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pay-app
+  template:
+    metadata:
+      labels:
+        app: pay-app
+    spec:
+      containers:
+      - name: pay-app
+        image: sebasgarciamo/app-pay
+        ports:
+        - containerPort: 8010
+      - name: pay-db
+        image: gallo9923/app-pay-mysql
+        ports:
+        - containerPort: 3306
