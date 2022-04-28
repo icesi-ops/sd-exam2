@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-mysql
+  labels:
+    app: db
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: db
+    tier: mysql
+  clusterIP: None
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+  labels:
+    app: db
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgresql-pv-claim
+  labels:
+    app: db
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-mysql
+  labels:
+    app: db
+spec:
+  selector:
+    matchLabels:
+      app: db
+      tier: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: db
+        tier: mysql
+    spec:
+      containers:
+      - image: pcspam/mysql:0.1.0
+        name: mysql
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      - image: pcspam/postgres:0.1.0
+        name: postgresql
+        ports:
+        - containerPort: 5432
+          name: postgresql
+        volumeMounts:
+        - name: postgresql-persistent-storage
+          mountPath: /var/lib/postgres
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
+      - name: postgresql-persistent-storage
+        persistentVolumeClaim:
+          claimName: postgresql-pv-claim

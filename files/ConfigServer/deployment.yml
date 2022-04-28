@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: configserver-nodeport
+spec:
+  type: NodePort
+  selector:
+    project: configserver
+    service: web
+  ports:
+   - protocol: TCP
+     port: 8010
+     targetPort: 8010
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: configserver-deployment
+  labels:
+   app: configserver
+spec:
+  minReadySeconds: 0
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 2
+  replicas: 6
+  selector:
+    matchLabels:
+      app: configserver
+  template:
+    metadata:
+      labels:
+        app: configserver
+    spec:
+     containers:
+     - name: appconfig
+       image: icesiops/appconfig:0.1.0
+       ports:
+        - containerPort: 8010
