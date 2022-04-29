@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: pay-bd-replicaset
+  labels:
+    app: pay-bd
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pay-bd
+  template:
+    metadata:
+      labels:
+        app: pay-bd
+    spec:
+      containers:
+      - name: pay-bd
+        image: gallo9923/app-pay-db
+        ports:
+        - containerPort: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bd-pay-clusterip-service
+spec:
+  selector:
+    app: pay-bd
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
