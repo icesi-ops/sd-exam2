@@ -6,6 +6,7 @@ Author:
 Assigned microservice: Pay
 
 Instructions:
+# Namespace setup
 1. kubectl apply -f namespace.yaml
 
 # Config Microservice
@@ -23,8 +24,9 @@ Instructions:
 7. kubectl apply -f app-transaction-db.yaml -n pay-app
 7. kubectl apply -f app-transaction.yaml -n pay-app
 
-# root_mongo
-# password_mongo
+# Invoice Microservice
+8. kubectl apply -f app-invoice-db.yaml -n pay-app
+9. kubectl apply -f app-invoice-deployment.yaml -n pay-app
 
 Configuration files repository: 
 - https://github.com/Gallo9923/app-pay-config.git
