@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appconfig-deployment
+  namespace: app-namespace
+  labels:
+    app: appconfig
+spec:
+  replicas: 6
+  minReadySeconds: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 2
+  selector:
+    matchLabels:
+      app: appconfig
+  template:
+    metadata:
+      labels:
+        app: appconfig
+    spec:
+      containers:
+      - name: app-config
+        image: cgironza/appconfig:0.1.0
+        ports:
+        - containerPort: 8888

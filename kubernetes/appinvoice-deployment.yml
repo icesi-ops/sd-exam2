@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appinvoice-deployment
+  namespace: app-namespace
+  labels:
+    app: app-invoice
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: app-invoice
+  template:
+    metadata:
+      labels:
+        app: app-invoice
+    spec:
+      containers:
+      - name: app-invoice
+        image: li1408/appinvoice:0.1.0
+        ports:
+        - containerPort: 8016

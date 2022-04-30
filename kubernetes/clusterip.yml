@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: app-database
+  namespace: app-namespace
+spec:
+  selector:
+   app: app-database
+  ports:
+   - protocol: TCP
+     port: 8500
+     targetPort: 8500

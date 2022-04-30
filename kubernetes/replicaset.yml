@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: database
+  namespace: app-namespace
+  labels:
+    app: app-invoice
+    tier: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: database
+  template:
+    metadata:
+      labels:
+        tier: database
+    spec:
+      containers:
+      - name: postgres
+        image: li1408/postgres:latest
+        ports:
+        - containerPort: 3306
