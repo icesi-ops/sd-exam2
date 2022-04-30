@@ -3,19 +3,23 @@ kind: Deployment
 metadata: 
   name: appconfig
   labels:
-    app: appconfig
+    project: app-pay
+    service: web
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: appconfig
+      project: app-pay
+      service: web
   template:
     metadata:
       labels:
-        app: appconfig
+        project: app-pay
+        service: web
     spec:
       containers:
       - name: appconfig
         image: ultrakiwi/appconfig:v.1.2
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80 

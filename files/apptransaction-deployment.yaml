@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: app-transaction
+  labels:
+    project: app-pay
+    service: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: app-pay
+      service: web
+  template:
+    metadata:
+      labels:
+        project: app-pay
+        service: web
+    spec:
+      containers:
+      - name: app-transaction
+        image: ultrakiwi/app-transaction:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80 
