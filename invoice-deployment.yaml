@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appinvoice-deployment
+  namespace: villota
+  labels:
+   app: app-invoice
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: app-invoice
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: app-invoice
+    spec:
+     containers:
+     - name: app-invoice
+       image: underbedmonster/app-invoice
+       imagePullPolicy: "IfNotPresent"
+       ports:
+        - containerPort: 8006
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-service
+spec:
+  selector:
+    app: example
+  ports:
+    - port: 8765
+      targetPort: 9376
+  type: LoadBalancer

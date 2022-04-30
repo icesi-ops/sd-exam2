@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-config-deploy
+  namespace: villota
+  labels:
+    app: app-config
+spec:
+  replicas: 6
+  minReadySeconds: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 2
+  selector:
+    matchLabels:
+      app: app-config
+  template:
+    metadata:
+      labels:
+        app: app-config
+    spec:
+      containers:
+      - name: app-config
+        image: underbedmonster/app-config
+        imagePullPolicy: "IfNotPresent"
+        ports:
+        - containerPort: 8888
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-config-service
+  labels:
+    app: app-config
+  namespace: villota
+spec:
+  selector:
+    app: app-config
+  type: NodePort
+  ports:
+    - port: 8888
+      targetPort: 8888
