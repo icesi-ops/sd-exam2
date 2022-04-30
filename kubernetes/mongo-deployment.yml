@@ -1,0 +1,39 @@
+#Deployment YAML definition
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: mongo
+  namespace: exam2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      name: mongo
+      labels:
+        app: mongo
+    spec:
+      containers:
+      - name: mongo
+        image: mongo
+        imagePullPolicy: "IfNotPresent"
+        ports:
+        - containerPort: 27017
+---
+# Service YAML definition
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  labels:
+    app: mongo
+  namespace: exam2
+spec:
+  selector:
+    app: mongo
+  ports:
+    - port: 27017
+      targetPort: 27017
+  
