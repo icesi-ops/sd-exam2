@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: clusterip-chk
+spec:
+  containers:
+  - name: centos
+    image: centos
+    command: ["/bin/sh", "-c", "while : ;do curl http://${CIP_SERVICE_HOST}:3306/; sleep 10; done"]

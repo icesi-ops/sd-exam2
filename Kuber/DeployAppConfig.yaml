@@ -1,0 +1,41 @@
+apiVersion:   apps/v1
+kind: Deployment
+metadata:
+  name: dconfig
+  namespace: exam-2
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+         role: config
+  template:
+    metadata:
+      labels:
+        role: config
+    spec:
+     containers:
+     - name: appconfig
+       image: cgironza/appconfig:0.1.0
+       ports:
+        - containerPort: 8888
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 2
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: np
+  namespace: exam-2
+spec:
+  type: NodePort
+  selector:
+    role: config
+  ports:
+    - port: 8888
+      targetPort: 8888
+      nodePort: 30000

@@ -1,0 +1,40 @@
+apiVersion:   apps/v1
+kind: Deployment
+metadata:
+  name: dpay
+  namespace: exam-2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+         role: pay
+  template:
+    metadata:
+      labels:
+        role: pay
+    spec:
+     containers:
+     - name: apppay
+       image: cgironza/apppay:0.1.0
+       ports:
+        - containerPort: 8006
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: lb
+  namespace: exam-2
+spec:
+  type: LoadBalancer
+  selector:
+    role: pay
+  ports:
+    - port: 8006
+      targetPort: 8006
