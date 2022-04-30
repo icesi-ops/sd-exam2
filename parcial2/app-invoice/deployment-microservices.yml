@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservices-deployment
+  labels:
+   app: app-invoice
+spec:
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  replicas: 2
+  selector:
+    matchLabels:
+         app: app-invoice
+  template:
+    metadata:
+      labels:
+        app: app-invoice
+    spec:
+     containers:
+     - name: app-invoice
+       image: alejandraestacio/app-invoice:p2
+       ports:
+        - containerPort: 8006
+        
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: loadbalancer-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: app-invoice
+  ports:
+   - protocol: TCP
+     port: 8006
+     targetPort: 8006
+status:
+    loadBalancer:
+      ingress:
+      - ip: 192.0.2.127

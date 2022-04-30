@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: mysql-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mysql-app
+    matchExpressions:
+      - {key: version, operator: In, values: ["0.1", "0.2"]}
+  template:
+    metadata:
+      name: mysql-app
+      labels:
+        app: mysql-app
+        version: "0.1"
+    spec:
+      containers:
+      - name: mysql-app
+        image: alejandraestacio/mysql:1
+        ports:
+        - containerPort: 3306
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: mysql-bd
+spec:
+  type: ClusterIP
+  selector:
+    app: mysql-app
+  ports:
+   - protocol: TCP
+     port: 3306
+     targetPort: 3306

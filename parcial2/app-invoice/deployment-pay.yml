@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pay-deployment
+  labels:
+    app: app-pay
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-pay
+  template:
+    metadata:
+      labels:
+        app: app-pay
+    spec:
+      containers:
+      - name: app-pay
+        image: alejandraestacio/app-pay:1
+        ports:
+        - containerPort: 8010
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: pay-service
+spec:
+  type: ClusterIP
+  selector:
+    app: app-pay
+  ports:
+   - protocol: TCP
+     port: 8010
+     targetPort: 8010

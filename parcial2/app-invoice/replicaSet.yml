@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: postgres-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: postgres-app
+    matchExpressions:
+      - {key: version, operator: In, values: ["0.1", "0.2"]}
+  template:
+    metadata:
+      name: postgres-app
+      labels:
+        app: postgres-app
+        version: "0.1"
+    spec:
+      containers:
+      - name: postgres-app
+        image: alejandraestacio/postgres:1
+        ports:
+        - containerPort: 5432
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: postgres-app
+spec:
+  type: ClusterIP
+  selector:
+    app: postgres-app
+  ports:
+   - protocol: TCP
+     port: 5432
+     targetPort: 5432
