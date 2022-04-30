@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transaction-deployment
+  labels:
+    app: transaction-app
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: transaction-app
+  template:
+    metadata:
+      labels:
+        app: transaction-app
+    spec:
+      containers:
+      - name: transaction-app
+        image: sebasgarciamo/app-transaction:mt-2
+        ports:
+        - containerPort: 8082
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transaction-app-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: transaction-app
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082

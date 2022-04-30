@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bd-invoice-clusterip-service
+spec:
+  selector:
+    app: invoice-bd
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: invoice-bd-replicaset
+  labels:
+    app: invoice-bd
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: invoice-bd
+  template:
+    metadata:
+      labels:
+        app: invoice-bd
+    spec:
+      containers:
+      - name: invoice-bd
+        image: sebasgarciamo/app-invoice-postgres
+        ports:
+        - containerPort: 5432

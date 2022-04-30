@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pay-deployment
+  labels:
+    app: pay-app
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: pay-app
+  template:
+    metadata:
+      labels:
+        app: pay-app
+    spec:
+      containers:
+      - name: pay-app
+        image: sebasgarciamo/app-pay:2
+        ports:
+        - containerPort: 8010
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pay-app-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: pay-app
+  ports:
+    - protocol: TCP
+      port: 8010
+      targetPort: 8010
