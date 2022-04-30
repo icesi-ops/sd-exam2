@@ -230,7 +230,7 @@ spec:
     spec:
       containers:
       - name: app-invoice
-        image: pcspam/appinvoice
+        image: pcspam/app-invoice
         ports:
         - containerPort: 8006
       
