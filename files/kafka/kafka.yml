@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-deployment
+  labels:
+    app: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+      - name: kafka
+        image: johnnypark/kafka-zookeeper
+        ports:
+        - containerPort: 9092
+          name: "kafkaport1"
+        - containerPort: 2181
+          name: "kafkaport2"
+        env:
+          - name: ADVERTISED_HOST
+            value: ${KAFKA-SERVICE_SERVICE_HOST}
+          - name: NUM_PARTITIONS
+            value: "3"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kafka-service
+spec:
+  selector:
+   app: kafka
+  ports:
+   - protocol: TCP
+     port: 9092
+     targetPort: 9092
+     name: kafkaport1
+   - protocol: TCP
+     port: 2181
+     targetPort: 2181
+     name: kafkaport2
+
+

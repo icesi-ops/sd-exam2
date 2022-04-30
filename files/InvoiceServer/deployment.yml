@@ -6,10 +6,10 @@ spec:
   type: LoadBalancer
   selector:
     project: invoiceserver
-    service: web
+    app: invoiceserver
   ports:
-   - port: 8765
-     targetPort: 9376
+   - port: 8888
+     targetPort: 8888
 
 ---
 apiVersion: apps/v1
@@ -36,6 +36,6 @@ spec:
     spec:
      containers:
      - name: appinvoice
-       image: icesiops/appinvoice:0.1.0
+       image: pcspam/appinvoice
        ports:
         - containerPort: 8006

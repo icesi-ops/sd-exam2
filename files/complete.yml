@@ -1,0 +1,236 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sdexam2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-mysql
+  labels:
+    app: db
+spec:
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+  selector:
+    app: db
+    tier: mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-postgresql
+  labels:
+    app: db
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: db
+    tier: mysql
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+  labels:
+    app: db
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgresql-pv-claim
+  labels:
+    app: db
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-mysql
+  labels:
+    app: db
+spec:
+  selector:
+    matchLabels:
+      app: db
+      tier: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: db
+        tier: mysql
+    spec:
+      containers:
+      - image: pcspam/mysql:0.1.0
+        name: mysql
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      - image: pcspam/postgres:0.1.0
+        name: postgres
+        ports:
+        - containerPort: 5432
+          name: postgresql
+        volumeMounts:
+        - name: postgresql-persistent-storage
+          mountPath: /var/lib/postgres
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
+      - name: postgresql-persistent-storage
+        persistentVolumeClaim:
+          claimName: postgresql-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: configserver-nodeport
+spec:
+  type: NodePort
+  selector:
+    project: configserver
+    app: configserver
+  ports:
+   - protocol: TCP
+     port: 8888
+     targetPort: 8888
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: configserver-deployment
+  labels:
+    project: configserver
+    app: configserver
+spec:
+  minReadySeconds: 0
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 2
+  replicas: 6
+  selector:
+    matchLabels:
+      app: configserver
+  template:
+    metadata:
+      labels:
+        app: configserver
+    spec:
+      containers:
+      - name: app-config
+        image: pcspam/app-config
+        ports:
+        - containerPort: 8888
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-deployment
+  labels:
+    app: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+      - name: servicekafka
+        image: johnnypark/kafka-zookeeper
+        ports:
+        - containerPort: 9092
+          name: "kafkaport1"
+        - containerPort: 2181
+          name: "kafkaport2"
+        env:
+          - name: ADVERTISED_HOST
+            value: $(KAFKA-SERVICE_SERVICE_HOST)
+          - name: NUM_PARTITIONS
+            value: "3"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kafka-service
+spec:
+  selector:
+   app: kafka
+  ports:
+   - protocol: TCP
+     port: 9092
+     targetPort: 9092
+     name: kafkaport1
+   - protocol: TCP
+     port: 2181
+     targetPort: 2181
+     name: kafkaport2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: invoiceserver-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    project: invoiceserver
+    app: invoiceserver
+  ports:
+   - port: 8082
+     targetPort: 8006
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: invoiceserver-deployment
+  labels:
+   app: invoiceserver
+spec:
+  minReadySeconds: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 2
+  replicas: 2
+  selector:
+    matchLabels:
+         app: invoiceserver
+  template:
+    metadata:
+      labels:
+        app: invoiceserver
+    spec:
+      containers:
+      - name: app-invoice
+        image: pcspam/appinvoice
+        ports:
+        - containerPort: 8006
+      

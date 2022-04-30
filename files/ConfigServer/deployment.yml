@@ -1,24 +1,37 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: configserver-clusterip
+spec:
+  selector:
+    project: configserver
+    app: configserver
+  ports:
+    - protocol: TCP
+      port: 8888
+      targetPort: 8888
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: configserver-nodeport
 spec:
   type: NodePort
   selector:
     project: configserver
-    service: web
+    app: configserver
   ports:
    - protocol: TCP
-     port: 8010
-     targetPort: 8010
-
+     port: 8888
+     targetPort: 8888
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: configserver-deployment
   labels:
-   app: configserver
+    project: configserver
+    app: configserver
 spec:
   minReadySeconds: 0
   strategy:
@@ -37,6 +50,9 @@ spec:
     spec:
      containers:
      - name: appconfig
-       image: icesiops/appconfig:0.2.0
+       image: pcspam/app-config
        ports:
-        - containerPort: 8010
+        - containerPort: 8888
+
+
+        
