@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: appconfig
+  labels:
+    app: appconfig
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: appconfig
+  template:
+    metadata:
+      labels:
+        app: appconfig
+    spec:
+      containers:
+      - name: appconfig
+        image: ultrakiwi/appconfig:v.1.2
+        ports:
+        - containerPort: 80 
