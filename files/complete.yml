@@ -109,7 +109,6 @@ metadata:
 spec:
   type: NodePort
   selector:
-    project: configserver
     app: configserver
   ports:
    - protocol: TCP
@@ -121,7 +120,6 @@ kind: Deployment
 metadata:
   name: configserver-deployment
   labels:
-    project: configserver
     app: configserver
 spec:
   minReadySeconds: 0
