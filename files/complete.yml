@@ -23,14 +23,14 @@ kind: Service
 metadata:
   name: db-postgresql
   labels:
-    app: db
+    app: db-postgres
 spec:
   ports:
     - port: 5432
       targetPort: 5432
   selector:
-    app: db
-    tier: mysql
+    app: db-postgres
+    tier: postgres
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -50,7 +50,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: postgresql-pv-claim
   labels:
-    app: db
+    app: db-postgres
 spec:
   accessModes:
     - ReadWriteOnce
@@ -86,6 +86,31 @@ spec:
         volumeMounts:
         - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-postgres
+  labels:
+    app: db-postgres
+spec:
+  selector:
+    matchLabels:
+      app: db-postgres
+      tier: postgres
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: db-postgres
+        tier: postgres
+    spec:
+      containers:
       - image: pcspam/postgres:0.1.0
         name: postgres
         ports:
@@ -95,9 +120,6 @@ spec:
         - name: postgresql-persistent-storage
           mountPath: /var/lib/postgres
       volumes:
-      - name: mysql-persistent-storage
-        persistentVolumeClaim:
-          claimName: mysql-pv-claim
       - name: postgresql-persistent-storage
         persistentVolumeClaim:
           claimName: postgresql-pv-claim
