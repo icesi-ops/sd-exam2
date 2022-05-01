@@ -111,8 +111,7 @@ spec:
   selector:
     app: configserver
   ports:
-   - protocol: TCP
-     port: 8888
+   - port: 8888
      targetPort: 8888
 ---
 apiVersion: apps/v1
@@ -202,7 +201,6 @@ spec:
   ports:
    - port: 8082
      targetPort: 8006
-
 ---
 apiVersion: apps/v1
 kind: Deployment
