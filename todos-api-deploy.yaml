@@ -4,7 +4,7 @@ metadata:
   name: todos-api
   labels:
     app: todos-api
-  namespace: proyecto
+  namespace: segundoparcial
 spec:
   minReadySeconds: 3
   strategy:
