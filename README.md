@@ -21,4 +21,4 @@ Desplegue el servicio de users para poder realizar la evidencia de que el servic
 ![Dashboard](./evidences/Imagen3.png "Dashboard")
 
 # Prueba con el servicio de users
-![Prueba con el servicio de users](./evidences/Imagen4.png.png "Prueba con el servicio de users")
+![Prueba con el servicio de users](./evidences/Imagen4.png "Prueba con el servicio de users")
