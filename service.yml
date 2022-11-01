@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: distri-auth
+spec:
+  type: LoadBalancer
+  selector:
+    app: auth
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
