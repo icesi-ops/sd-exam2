@@ -22,3 +22,7 @@ Desplegue el servicio de users para poder realizar la evidencia de que el servic
 
 # Prueba con el servicio de users
 ![Prueba con el servicio de users](./evidences/Imagen4.png "Prueba con el servicio de users")
+
+### Imagen Docker Hub
+![Imagen Docker Hub](./evidences/Imagen5.png "Imagen Docker Hub")
+
