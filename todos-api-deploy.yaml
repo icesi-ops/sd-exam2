@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todos-api
+  labels:
+    app: todos-api
+  namespace: segundoparcial
+spec:
+  minReadySeconds: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  replicas: 3
+  selector:
+    matchLabels:
+      app: todos-api
+  template:
+    metadata:
+      labels:
+        app: todos-api
+    spec:
+      containers:
+        - name: todos-api
+          image: jhonnier20/todos_api:0.0.1
+          ports:
+            - containerPort: 8082
+          env:
+            - name: JWT_SECRET
+              value: "PRFT"
