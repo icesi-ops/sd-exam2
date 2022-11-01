@@ -13,6 +13,8 @@
 
 # Ingresamos al contenedor
 
+![Ingresamos al contenedor](./ss/ingresar.png "ingresamos al contenedor")
+
 ### Script para iniciar el frontend
     
     kubectl -n distribuidosparcial exec -it pod/logs-544bccbcbc-ph4hq
