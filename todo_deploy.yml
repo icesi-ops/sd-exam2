@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todos-deployment
+spec:
+  minReadySeconds: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: todos
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: todos
+    spec:
+      containers:
+      - name: todos
+        image: mateol7/todos_api:0.0.1
+        imagePullPolicy: Always
+        env:
+        #JWT_SECRET=PRFT TODO_API_PORT=8082
+          - name: JWT_SECRET
+            value: "PRFT" 
+          - name: TODO_API_PORT
+            value: "8082" 
+        ports:
+            - containerPort: 8082
+        resources:
+          limits:
+              memory: 512Mi
+              cpu: "0.5"
+          requests:
+            memory: 256Mi
+            cpu: "0.2"
