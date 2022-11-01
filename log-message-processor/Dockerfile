@@ -1,0 +1,8 @@
+FROM python:3.10.2-slim
+WORKDIR /usr/src/app
+RUN set -xe \
+    && apt-get update -y \
+    && apt-get install -y python3-pip
+COPY . .
+RUN pip3 install -r requirements.txt
+CMD ["python","./main.py"]
