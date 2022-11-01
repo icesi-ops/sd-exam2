@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-api
+  labels:
+    app: auth-api
+  namespace: parcial2
+spec:
+  minReadySeconds: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth-api
+  template:
+    metadata:
+      labels:
+        app: auth-api
+    spec:
+      containers:
+        - name: auth-api
+          image: rolfman/auth_api:0.0.1
+          ports:
+            - containerPort: 8000
+          env:
+            - name: AUTH_API_PORT
+              value: "8000"
+            - name: JWT_SECRET
+              value: "PRFT"
+            - name: USERS_API_ADDRESS
+              value: "http://users-api:8083"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-api
+  namespace: parcial2
+  labels:
+    app: auth-api
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
+  selector:
+    app: auth-api

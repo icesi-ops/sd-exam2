@@ -29,3 +29,5 @@ user: johnd
 user: janed
 
 ![frontend](5.gif)
+
+![frontend](6.png)
