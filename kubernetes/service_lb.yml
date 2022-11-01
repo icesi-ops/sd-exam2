@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx-service-lb
+spec:
+  type: LoadBalancer
+  selector:
+    project: chapter3
+    service: web
+  ports:
+    - protocol: TCP
+      port: 8089
+      targetPort: 80
