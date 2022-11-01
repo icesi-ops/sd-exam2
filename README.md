@@ -1,5 +1,4 @@
 # sd-exam2
-# Parcial 2
 
 # Christian David Flor Astudillo - A00355624
 
@@ -30,3 +29,5 @@ user: admin
 user: johnd
 
 user: janed
+
+![frontend-Google-Chrome-2022-10-31-19-52-48.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/161b9fb8-13a3-4368-a002-bc0f360ebcb0/frontend-Google-Chrome-2022-10-31-19-52-48.gif)
