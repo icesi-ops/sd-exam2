@@ -38,12 +38,26 @@ pipelines:
   - name: auth
     apiEndpoints:
       - appconfig
+      - apppay
       - apptransaction
     policies:
       - key-auth:
       - proxy:
           - action:
               serviceEndpoint: appconfig
+              changeOrigin: true
+              prependPath:  false
+              ignorePath:   false
+              stripPath:    false
+          - action:
+              serviceEndpoint: apppay
+              changeOrigin: true
+              prependPath:  false
+              ignorePath:   false
+              stripPath:    false
+
+          - action:
+              serviceEndpoint: apptransaction
               changeOrigin: true
               prependPath:  false
               ignorePath:   false
@@ -60,4 +74,3 @@ pipelines:
               prependPath:  false
               ignorePath:   false
               stripPath:    false
-    
