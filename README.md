@@ -1,6 +1,6 @@
 # Payments Microservices
 
-This repository is a docker practice for my Distribuited Systems course and it's based on this project: https://github.com/icesi-ops/training_microservices/tree/master/pay-app-spring-microservices
+This repository is a Docker practice for my Distributed Systems course, and it's based on this project: https://github.com/icesi-ops/training_microservices/tree/master/pay-app-spring-microservices
 
 ## Changes
 
