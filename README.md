@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# sd-exam2
-Here, enjoy !
-=======
 # Payments Microservices
 
 This repository is a docker practice for my Distribuited Systems course and it's based on this project: https://github.com/icesi-ops/training_microservices/tree/master/pay-app-spring-microservices
@@ -24,4 +20,3 @@ This repository is a docker practice for my Distribuited Systems course and it's
 - [Consul configuration on config server](config)
 - [Loadbalancer configuration](haproxy/haproxy.cfg)
 - [API Gateway configuration](appgw/gateway.config.yml)
->>>>>>> master
