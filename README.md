@@ -1,25 +1,22 @@
-# Microservicios con Spring Boot
+# Payments Microservices
 
-![Architecture](./resources/microservicesarchitecture.png)
+This repository is a docker practice for my Distribuited Systems course and it's based on this project: https://github.com/icesi-ops/training_microservices/tree/master/pay-app-spring-microservices
 
-## Información de los microservicios
-El microservicio de invoices, debe listar las facturas de clientes y además debe consumir una cola para cambiar el estado de la factura cuando esta se paga a través del microservicio de pago.
-El microservicio de pago debe registrar el pago en su respectiva bd y además debe dejar un mensaje en una cola para actualizar la factura en el microservicio de facturas y además debe dejar un mensaje en una cola para registrar el movimiento en el microservicio de transacciones.
-El microservicio de transacciones debe listar las transacciones de una factura, además debe consumir una cola para obtener las transacciones de pago del microservicio de pago.
-Todos los microservicios deben consumir la cadena de conexión desde el servicio de configuración centralizada.
+## Changes
 
-La información de los endpoints disponibles por microservicio se incluyen en el documento de INFO.md
-## Scripts de creación de bases de datos
+    1. The application properties of each application on the configuration server now include information about the consul port and server.
 
-La informacion de como crear las bases de datos y sus respectivas tablas se incluyen en google.com
+    2. The application now includes the actuator dependency to facilitate health checks management.
 
-## Tecnologías utilizadas
+    3. The loadbalancer has been configured to redirect incoming traffic to the appropriate microservice using consul as the DNS.
 
-- Spring Boot (Java Framework JDK v11+)
-- Gradle (Gestor de dependencias)
-- Postman (Test de endpoints/servicios rest)
-- Postgresql (Base de Datos)
-- MySQL (Base de Datos)
-- MongoDB (Base de Datos NoSQL)
-- Kafka (Gestor de Mensajería)
-- Github (Repositorio para proyecto y Configuraciones de micorservicios)
+    4. The gateway configuration now includes the respective API and service endpoints, as well as traffic policies. 
+
+## Evidence
+
+[Demo](https://clipchamp.com/watch/RuTAekPzfXZ)
+
+## Review the configuration files
+- [Consul configuration on config server](config)
+- [Loadbalancer configuration](haproxy/haproxy.cfg)
+- [API Gateway configuration](appgw/gateway.config.yml)
