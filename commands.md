@@ -75,7 +75,7 @@ docker run --network distribuidos -d --name express-gateway-data-store \
 Run the command inside appgw directory o keep in mind change the volume path to pointing to gateway.config.yml
 docker run -d --name express-gateway \
     --network distribuidos \
-    -v .:/var/lib/eg \
+    -v /home/distribuidos/yusun/Semana12/training_microservices/pay-app-spring-microservices/appgw:/var/lib/eg \
     -p 8080:8080 \
     -p 9876:9876 \
     express-gateway
@@ -100,5 +100,28 @@ eg credentials create -c sebas -t key-auth -q
 8. Curl API endpoint as Sebas  with key credentials - SUCCESS!
 
 curl -H "Authorization: apiKey ${keyId}:${keySecret}" http://localhost:8080/config/app-pay/dev
-curl -H "Authorization: apiKey 6Xm0vLqqHdYQNNphMOGjeL:1z9JqOctpKjYhHmOTd93yv" http://localhost:8080/config/app-pay/dev
+curl -H "Authorization: apiKey 7CxmqBdENKHTxett3TxQbV:18aywQxUraDFnoSRNsO2tF" http://localhost:8080/config/app-pay/dev
 
+
+7CxmqBdENKHTxett3TxQbV:18aywQxUraDFnoSRNsO2tF
+
+curl --location --request POST 'http://localhost:8080/pay/pay' \
+--header 'Content-Type: application/json' \
+--header 'X-API-Key: 7CxmqBdENKHTxett3TxQbV:18aywQxUraDFnoSRNsO2tF' \
+--data-raw '{
+    "idOperation": 1,
+    "idInvoice": 1,
+    "amount": 40,
+    "dateTime": "2021-05-21"
+}'
+
+
+
+curl --location --request POST 'http://localhost:8080/pay/pay' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "idOperation": 1,
+    "idInvoice": 1,
+    "amount": 15,
+    "dateTime": "2021-05-21"
+}'
