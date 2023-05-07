@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class TransactionEvents {
 
@@ -27,6 +29,20 @@ public class TransactionEvents {
         event.setState(1);
    		log.info("Se ha pagado la factura # " + event.getIdInvoice());
 
-        _dao.save(event);
+        this.updateInvoicePayment(event);
+        //_dao.save(event);
+    }
+
+    private void updateInvoicePayment(Invoice invoice){
+        Optional<Invoice> currentInvoice = _dao.findById(invoice.getIdInvoice());
+
+        if(currentInvoice.isPresent()){
+            Invoice updatedInvoice = currentInvoice.get();
+            updatedInvoice.setAmount(updatedInvoice.getAmount()-invoice.getAmount());
+            _dao.save(updatedInvoice);
+        }
+        else{
+            _dao.save(invoice);
+        }
     }
 }
