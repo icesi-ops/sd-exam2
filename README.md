@@ -1,5 +1,5 @@
-## CONFIGURACIÓN PREVIA
-# Agregar la sección #consul en el archivo "application.properties" de cada servicio.
+# CONFIGURACIÓN PREVIA
+## Agregar la sección #consul en el archivo "application.properties" de cada servicio.
 ```bash
     # Consul
     spring.cloud.consul.host=consul
@@ -11,11 +11,11 @@
 - app-pay/src/main/resources/application.properties
 - app-transaction/src/main/resources/application.properties
 
-# Añadir dependencias en build.gradle de cada servicio.
+## Añadir dependencias en build.gradle de cada servicio.
 implementation 'org.springframework.cloud:spring-cloud-starter-consul-discovery' into
 implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-# Instalar dnsmasq
+## Instalar dnsmasq
 ```bash
 sudo apt install dnsmasq
 sudo touch /etc/dnsmasq.d/10-consul
@@ -23,7 +23,7 @@ sudo nano /etc/dnsmasq.d/10-consul
 ```
 server=/consul/127.0.0.1#8600
 
-# Iniciar el servicio de dnsmasq 
+## Iniciar el servicio de dnsmasq 
 Esto hace que tome a consul como servidor DNS
 ```bash
 sudo nano /etc/resolv.conf
@@ -33,7 +33,7 @@ nameserver 127.0.0.1
 systemctl restart dnsmasq
 ```
 
-# Loadbalancer configuration
+## Loadbalancer configuration
 En haproxy/haproxy.cfg
 ```bash
 defaults
@@ -93,7 +93,7 @@ resolvers consul
     hold valid 5s 
 
 ```
-# apigateway configuration
+## apigateway configuration
 En appgw/gateway.config.yml
 ```yml
 http:
@@ -168,7 +168,7 @@ pipelines:
             ignorePath:   false
             stripPath:    false                                          
 ```
-## BUILD
+# BUILD
 Crear build.sh
 ```bash
 #!/bin/bash
@@ -184,7 +184,7 @@ sudo chmod +x build.sh
 Ejecutarlo:
 ./build.sh
 
-## RUN
+# RUN
 Crear docker compose
 ```yml
 version: '3.7'
@@ -342,19 +342,22 @@ networks:
 # En versiones anteriores docker-compose up
 sudo docker compose up
 ```
-## TEST
+# TEST
 Ingresamos datos a la base de datos postgres
 ```bash
 sudo apt install postgresql
 psql -h localhost -d db_invoice -U postgres -f resources/postgres/data.sql
 ```
-# Prueba loadbalancer
+## Prueba consul
+En un navegador web ingresamos a:http://localhost:8500 y en services deberian de aparecer nuestros servicios.
+
+## Prueba loadbalancer
 En un navegador web ingresamos a: http://localhost:9000/invoice/all
 El servicio estará bien si obtenemos el siguiente resultado:
 ```json
 [{"idInvoice":1,"amount":1000.0,"state":0},{"idInvoice":2,"amount":5000.0,"state":1},{"idInvoice":3,"amount":300.0,"state":0},{"idInvoice":4,"amount":600.0,"state":0},{"idInvoice":5,"amount":400.0,"state":0}]
 ```
-# Prueba apigateway
+## Prueba apigateway
 1. uncoment #key-auth
 2. connect to gw container:
 ```bash
