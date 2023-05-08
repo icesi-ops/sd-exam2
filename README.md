@@ -11,9 +11,9 @@ Aquí hemos desarrollado la siguiente arquitectura de microservicios, en la cual
 ### Guía de ejecución:
 Los comando necesarios para correr las contenedores se encuentran en el archivo `commands.md`
 1. Iniciamos por construir y correr las imagenes de las bases de datos.
-2. Instalamos dnsmasq
-3. Creamos un archivo de configuración para dnsmasq (10-consul) en la ruta /etc/dnsmasq.d con el contenido `server=/consul/127.0.0.1#8600`
-4. Iniciamos el servicio de dnsmasq
+2. Instalamos dnsmasq.
+3. Creamos un archivo de configuración para dnsmasq (10-consul) en la ruta /etc/dnsmasq.d con el contenido `server=/consul/127.0.0.1#8600`.
+4. Iniciamos el servicio de dnsmasq.
 5. Modificamos el archivo /etc/resolv.conf y le añadimos la línea `nameserver 127.0.0.1` para que haga de serivor dns.
 6. Corremos la imagen del Servidor Consul.
 7. Construimos y corremos las imágenes de los microservicios.
