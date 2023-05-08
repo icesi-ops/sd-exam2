@@ -5,10 +5,10 @@ Aquí hemos desarrollado la siguiente arquitectura de microservicios, en la cual
 
 ![Architecture](https://github.com/icesi-ops/training_microservices/blob/master/pay-app-spring-microservices/resources/microservicesarchitecture.png)
 
-### Problemas encontrados:
+## Problemas encontrados:
 - Hacer que el health check que realiza el servidor de Consul con sus agentes funcionara para los microservicios.
 
-### Guía de ejecución:
+## Guía de ejecución:
 Los comando necesarios para correr las contenedores se encuentran en el archivo `commands.md`
 1. Iniciamos por construir y correr las imagenes de las bases de datos.
 2. Instalamos dnsmasq.
