@@ -1,0 +1,118 @@
+docker network create nombrered #el nombre en este caso es distribuidos
+
+docker network ls
+
+cd resources/postgres
+
+docker build -t dannagarcia/postgres:0.1.0 .
+
+docker run -p 5432:5432 --name postgres --network distribuidos -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=db_invoice -d dannagarcia/postgres:0.1.0
+
+cd resources/mysql
+
+docker build -t dannagarcia/mysql:0.1.0 .
+
+docker run -p 3306:3306 --name mysql --network distribuidos -e MYSQL_ROOT_PASSWORD=mysql -e MYSQL_DATABASE=db_operation -d dannagarcia/mysql:0.1.0
+
+#Verificamos que este corriendo los contenedores mysql y postgres
+docker ps 
+
+docker run -p 27017:27017 --network distribuidos --name mongodb -d mongo
+
+docker run -p 2181:2181 -d -p 9092:9092 --name servicekafka --network distribuidos -e ADVERTISED_HOST=servicekafka -e NUM_PARTITIONS=3 johnnypark/kafka-zookeeper
+
+cd app-config
+
+#Comentamos en build.gradle la linea 21 del consul
+#Comentamos en src/main/resources/application.properties todo lo del consul
+
+docker build -t dannagarcia/app-config:0.1.0 .
+
+docker run -d -p 8888:8888 --network distribuidos --name app-config dannagarcia/app-config:0.1.0
+
+curl --location --request GET 'http://localhost:8888/app-pay/dev'
+
+#Debería tener una estructura como esta 
+#{"name":"app-pay","profiles":["dev"],"label":null,"version":"0f4bac8ca6ab86df2b9c61aaa7de81479398bf2d","state":null,"propertySources":[{"name":"https://github.com/icesi-ops/training_microservices.git/pay-app-spring-microservices/config/app-pay-dev.properties","source":{"spring.application.name":"app-pay","server.port":"8010","spring.kafka.template.default-topic":"transaction-events","spring.kafka.producer.bootstrap-servers":"servicekafka:9092","spring.kafka.producer.key-serializer":"org.apache.kafka.common.serialization.IntegerSerializer","spring.kafka.producer.value-serializer":"org.apache.kafka.common.serialization.StringSerializer","spring.kafka.admin.properties.bootstrap.servers":"servicekafka:9092","logging.level.org.hibernate.SQL":"debug","spring.jpa.properties.hibernate.enable_lazy_load_no_trans":"true","spring.jpa.hibernate.ddl-auto":"create","spring.datasource.url":"jdbc:mysql://mysql:3306/db_operation?serverTimezone=America/Lima&allowPublicKeyRetrieval=true&useSSL=false","spring.datasource.username":"root","spring.datasource.password":"mysql","spring.datasource.driver-class-name":"com.mysql.cj.jdbc.Driver","spring.jpa.database-platform":"org.hibernate.dialect.MySQL8Dialect"}}]}
+
+
+cd app-invoice 
+docker build -t dannagarcia/app-invoice:0.1.0 .
+
+docker run -d -p 8006:8006 --network distribuidos --name app-invoice dannagarcia/app-invoice:0.1.0
+
+curl --location --request GET 'http://localhost:8006/all'
+
+#Retorna []
+
+sudo apt install postgresql
+
+cd resources/postgres/data.sql
+
+
+#Clave postgres
+
+psql -h localhost -d db_invoice -U postgres -f data.sql
+
+curl --location --request GET 'http://localhost:8006/all'
+
+cd app-pay
+
+docker build -t dannagarcia/app-pay:0.1.0 .
+
+docker run -d -p 8010:8010 --network distribuidos --name app-pay dannagarcia/app-pay:0.1.0
+
+cd app-transaction
+
+
+docker build -t dannagarcia/app-transaction:0.1.0 .
+
+docker run -d -p 8082:8082 --network distribuidos --name app-transaction dannagarcia/apptransaction:0.1.0
+
+#Ejecutamos 
+curl --location --request POST 'http://localhost:8010/pay' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "idOperation": 1,
+    "idInvoice": 1,
+    "amount": 900,
+    "dateTime": "2021-05-21"
+}'
+
+#Deberia salir así [{"idInvoice":1,"amount":900.0,"state":1},{"idInvoice":2,"amount":5000.0,"state":1},{"idInvoice":3,"amount":300.0,"state":0},{"idInvoice":4,"amount":600.0,"state":0},{"idInvoice":5,"amount":400.0,"state":0}]
+
+//Corremos hasta kafka
+
+//Consul
+
+sudo apt install dnsmasq
+nano /etc/dnsmasq.d/10-consul #server=/consul/127.0.0.1#8600
+sudo service dnsmasq start
+nano /etc/resolv.conf #add 127.0.0.1
+sudo service dnsmasq restart
+docker run -d -p 8500:8500 -p 8600:8600/udp --network distribuidos --name consul consul:latest agent -server -bootstrap-expect 1 -ui -data-dir /tmp -client=0.0.0.0
+
+//corremos el app-config
+
+cd haproxy
+
+docker build -t dannagarcia/loadbalancer:0.1.0 .
+docker run -d -p 9000:80 --name loadbalancer --network distribuidos dannagarcia/loadbalancer:0.1.0
+
+cd appgw
+
+docker run -d -p 6379:6379 --network distribuidos -d --name express-gateway-data-store redis:alpine
+docker run -d --name express-gateway --network distribuidos -v /home/dannagarcia/Docker/pay-app-spring-microservices/appgw:/var/lib/eg -p 8080:8080 -p 9876:9876 express-gateway
+
+docker exec -it express-gateway sh
+eg users create
+eg credentials create -c dannagarcia -t key-auth -q
+
+0wLlR0a15Qyz6GjmtFoJwI:64NXc1I0aTjBSg3WkSXl5m
+
+curl -H "Authorization: apiKey 0wLlR0a15Qyz6GjmtFoJwI:64NXc1I0aTjBSg3WkSXl5m" http://localhost:8080/config/app-pay/dev
+
+curl -H "Authorization: apiKey 0wLlR0a15Qyz6GjmtFoJwI:64NXc1I0aTjBSg3WkSXl5m" http://localhost:8080/config/app-invoice/dev
+
+curl -H "Authorization: apiKey 0wLlR0a15Qyz6GjmtFoJwI:64NXc1I0aTjBSg3WkSXl5m" http://localhost:8080/config/app-transaction/dev
+
