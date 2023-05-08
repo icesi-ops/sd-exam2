@@ -14,7 +14,7 @@ This repository is a Docker practice for my Distributed Systems course, and it's
 
 ## Evidence
 
-[Demo](https://clipchamp.com/watch/RuTAekPzfXZ)
+[Demo](https://youtu.be/_GDUdHEDhKk)
 
 ## Review the configuration files
 - [Consul configuration on config server](config)
