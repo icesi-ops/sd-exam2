@@ -34,43 +34,41 @@ policies:
   - oauth2
   - proxy
   - rate-limit
+  
 pipelines:
-  - name: auth
-    apiEndpoints:
-      - appconfig
-      - apppay
-      - apptransaction
-    policies:
-      - key-auth:
-      - proxy:
-          - action:
-              serviceEndpoint: appconfig
-              changeOrigin: true
-              prependPath:  false
-              ignorePath:   false
-              stripPath:    false
-          - action:
-              serviceEndpoint: apppay
-              changeOrigin: true
-              prependPath:  false
-              ignorePath:   false
-              stripPath:    false
+  default:
+      apiEndpoints:
+        - appconfig
+        - apppay
+        - apptransaction
+        - appinvoice
+      policies:
+        - key-auth:
+        - proxy:
+            - action:
+                serviceEndpoint: appconfig
+                changeOrigin: true
+                prependPath:  false
+                ignorePath:   false
+                stripPath:    false
+            - action:
+                serviceEndpoint: apppay
+                changeOrigin: true
+                prependPath:  false
+                ignorePath:   false
+                stripPath:    false
 
-          - action:
-              serviceEndpoint: apptransaction
-              changeOrigin: true
-              prependPath:  false
-              ignorePath:   false
-              stripPath:    false
+            - action:
+                serviceEndpoint: apptransaction
+                changeOrigin: true
+                prependPath:  false
+                ignorePath:   false
+                stripPath:    false
+                policies:
 
-  - name: user
-    apiEndpoints:
-      - appinvoice
-    policies:
-      - proxy:
-          - action:
-              serviceEndpoint: appinvoice 
-              changeOrigin: true
-              prependPath:  false
-              ignorePath:   false
-              stripPath:    false
+            - action:
+                serviceEndpoint: appinvoice 
+                changeOrigin: true
+                prependPath:  false
+                ignorePath:   false
+                stripPath:    false

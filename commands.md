@@ -35,14 +35,14 @@ docker run -d -p 8500:8500 -p 8600:8600/udp --network distribuidos --name consul
 Aqui se debe ingresar en cada una de las carpetas de los servicios y se debe crear la imagen:
 docker build -t icesiops/nombreservicio:tag .
 
-docker build -t icesiops/appconfig:0.1.0 .
-docker build -t icesiops/appinvoice:0.1.0 .
-docker build -t icesiops/apppay:0.1.0 .
-docker build -t icesiops/apptransaction:0.1.0 .
+docker build -t icesiops/appconfig:0.1.0 app-config/.
+docker build -t icesiops/appinvoice:0.1.0 app-invoice/.
+docker build -t icesiops/apppay:0.1.0 app-pay/.
+docker build -t icesiops/apptransaction:0.1.0 app-transaction/.
 
 Despues de creada las imagenes, se deben desplegar usando: (Importante attachar la red)
 
-docker run -p8888:8888 --network distribuidos --name app-config icesiops/appconfig:0.1.0
+docker run -p 8888:8888 --network distribuidos --name app-config icesiops/appconfig:0.1.0
 docker run -d -p 8006:8006 --network distribuidos --name app-invoice icesiops/appinvoice:0.1.0
 docker run -d -p 8010:8010 --network distribuidos --name app-pay icesiops/apppay:0.1.0
 docker run -d -p 8082:8082 --network distribuidos --name app-transaction icesiops/apptransaction:0.1.0
@@ -85,7 +85,7 @@ resolvers consul
 Construimos la imagen y corremos el contenedor
 
 docker build -t icesiops/loadbalancer:0.1.0 .
-docker run -d -p 9000:9000 --network distribuidos --name loadbalancer icesiops/loadbalancer:0.1.0
+docker run -d -p 9000:80 --network distribuidos --name loadbalancer icesiops/loadbalancer:0.1.0
 
 
 ### Application Gateway
@@ -116,10 +116,11 @@ eg users create
 6. assign auth key
 eg credentials create -c sebas -t key-auth -q
 
-7. copy key 3DvE2HCfZCyfgxAjF40tOk:2U4Cojm11JaPJF6WRUcFBL
+7. copy key 0tQLw8jIfq6Zq0lDDJH7Of:39wh7qxmNPgJMvlB9EywAS
 
 8. Curl API endpoint as Sebas  with key credentials - SUCCESS!
 
 curl -H "Authorization: apiKey ${keyId}:${keySecret}" http://localhost:8080/config/app-pay/dev
 
-curl -H "Authorization: apiKey 3DvE2HCfZCyfgxAjF40tOk:2U4Cojm11JaPJF6WRUcFBL" http://localhost:8080/config/app-pay/dev
+curl -H "Authorization: apiKey 7ArDYacgLpKYNiFKd160TR:3NpZ7m1J7cjWJWKAQPnvA2" http://localhost:8080/config/app-pay/dev
+7ArDYacgLpKYNiFKd160TR:3NpZ7m1J7cjWJWKAQPnvA2
