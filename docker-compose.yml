@@ -1,0 +1,150 @@
+version: '3.7'
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=db_invoice 
+    networks:
+      - distribuidos
+  mysql:
+    image: mysql:latest
+    restart: always
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysql
+      - MYSQL_DATABASE=db_operation 
+    networks:
+      - distribuidos
+  mongodb:
+    image: mongo
+    restart: always
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    networks:
+      - distribuidos
+  servicekafka:
+    image: johnnypark/kafka-zookeeper
+    restart: always
+    container_name: servicekafka
+    ports:
+      - "2181:2181"
+      - "9092:9092"
+    environment:
+      - ADVERTISED_HOST=servicekafka 
+      - NUM_PARTITIONS=3
+    networks:
+      - distribuidos 
+  consul:
+    image: consul:latest
+    restart: always
+    container_name: consul
+    command: "agent -server -bootstrap-expect 1 -ui -data-dir /tmp -client=0.0.0.0"
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+    networks:
+      - distribuidos  
+  appconfig:
+    #build: ./app-config
+    image: icesiops/appconfig:0.1.0
+    restart: always
+    container_name: app-config
+    ports:
+      - "8888:8888"
+    networks:
+      - distribuidos 
+    depends_on:
+      - servicekafka
+      - consul
+  appinvoice:
+    #build: ./app-invoice
+    image: icesiops/appinvoice:0.1.0
+    restart: always
+    container_name: app-invoice
+    ports:
+      - "8006:8006"
+    networks:
+      - distribuidos
+    depends_on:
+      - appconfig
+      - postgres
+      - servicekafka
+      - consul
+  apppay:
+    #build: ./app-pay
+    image: icesiops/apppay:0.1.0
+    restart: always
+    container_name: app-pay
+    ports:
+      - "8010:8010"
+    networks:
+      - distribuidos
+    depends_on:
+      - appconfig
+      - mysql
+      - servicekafka
+      - consul
+  apptransaction:
+    #build: ./app-transaction
+    image: icesiops/apptransaction:0.1.0
+    restart: always
+    container_name: app-transaction
+    ports:
+      - "8082:8082"
+    networks:
+      - distribuidos
+    depends_on:
+      - appconfig
+      - mongodb
+      - servicekafka
+      - consul
+  loadbalancer:
+    #build: ./haproxy
+    image: icesiops/loadbalancer:0.1.0
+    restart: always
+    container_name: loadbalancer
+    ports:
+      - "9000:80"
+    networks:
+      - distribuidos
+    depends_on:
+      - appconfig
+      - appinvoice
+      - apppay
+      - apptransaction
+  expressgatewayds:
+    image: redis:alpine
+    container_name: express-gateway-data-store
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - distribuidos
+    depends_on:
+      - loadbalancer
+  expressgateway:
+    image: express-gateway
+    container_name: express-gateway
+    restart: always
+    ports:
+      - "9876:9876"
+      - "8080:8080"
+    volumes:
+      - ./appgw:/var/lib/eg
+    networks:
+      - distribuidos
+    depends_on:
+      - loadbalancer
+      - expressgatewayds
+networks:
+  distribuidos:
+    name: distribuidos
+    external: false
