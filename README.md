@@ -1,5 +1,7 @@
 # sd-exam2 - Microservicios con Spring Boot
-Aquí hemos desarrollado la siguiente arquitectura de microservicios, en la cual podemos acceder a las funcionalidades de los diferentes microservicios a través de un API Gateway, que por detrás se comunica con un Balanceador de carga y este a su vez con un Servidor de Consul que tiene registrados los microserivicios como agentes de Consul:
+Por: Juan Fernando Angulo
+
+Aquí hemos desarrollado la siguiente arquitectura de microservicios, en la cual podemos acceder a las funcionalidades de diferentes microservicios a través de un API Gateway, que por detrás se comunica con un Balanceador de carga y este a su vez se comunica con un Servidor de Consul que descubre y registra los microserivicios como agentes de Consul:
 
 ![Architecture](https://github.com/icesi-ops/training_microservices/blob/master/pay-app-spring-microservices/resources/microservicesarchitecture.png)
 
@@ -21,7 +23,7 @@ Los comando necesarios para correr las contenedores se encuentran en el archivo 
 10. Ingresamos al contenedor del express-gateway y nos creamos un usuario con `eg users create`.
 11. Generamos las llaves de autenticación para nuestro usuario con `eg credentials create -c username -t key-auth -q` y las copiamos.
 <br>
-Listo, eso es todo, ahora podemos acceder a nuestro microservicios a través de la direccion `localhost:8080/ruta/al/microservicio` y para proporcionar las llaves de autenticación lo hacemos a través de curl con el siguiente comando:
+Listo, eso es todo, ahora podemos acceder a nuestro microservicios a través de la direccion localhost:8080/ruta/al/microservicio y para proporcionar las llaves de autenticación lo hacemos a través de curl con el siguiente comando:
 <br>
 
 ```bash
