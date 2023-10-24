@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubuntu-pod
+spec:
+  containers:
+    - name: ubuntu-container
+      image: ubuntu
+      command: ["/bin/sh"]
+      args: ["-c", " while true; do curl http://svc-nginx-app.samuelviviescas.svc.cluster.local:80; sleep 5; done"]
+  
+
